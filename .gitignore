@@ -1,3 +1,10 @@
+### Intellij ###
+# Covers JetBrains IDEs: IntelliJ
+*.iml
+
+## Directory-based project format:
+.idea/
+
 # Logs
 logs
 *.log
