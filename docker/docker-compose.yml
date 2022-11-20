@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '32775:5432'
+    environment:
+      - POSTGRES_DB=storefront_db
+      - POSTGRES_USER=dev_user
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+
+  postgres-test:
+    image: postgres
+    ports:
+      - '32776:5432'
+    environment:
+      - POSTGRES_DB=storefront_db_test
+      - POSTGRES_USER=dev_user
+      - POSTGRES_PASSWORD=secret
+
+volumes:
+  postgres:
