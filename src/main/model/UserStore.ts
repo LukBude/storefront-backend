@@ -14,7 +14,7 @@ export class UserStore {
       conn.release();
       return result.rows;
     } catch (err) {
-      throw new Error(`Cannot get users: ${err}`);
+      throw new Error(`Could not get users: ${err}`);
     }
   }
 
@@ -26,7 +26,7 @@ export class UserStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot get user: ${err}`);
+      throw new Error(`Could not get user: ${err}`);
     }
   }
 
@@ -39,7 +39,7 @@ export class UserStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot add user: ${err}`);
+      throw new Error(`Could not add user: ${err}`);
     }
   }
 
@@ -57,7 +57,42 @@ export class UserStore {
       }
       return null;
     } catch (err) {
-      throw new Error(`Cannot authenticate user: ${err}`);
+      throw new Error(`Could not authenticate user: ${err}`);
+    }
+  }
+
+  async getRoles(user: User): Promise<string[]> {
+    try {
+      const conn = await database.connect();
+      const sql = 'SELECT role FROM roles WHERE user_id = ($1)';
+      const result = await conn.query(sql, [user.id]);
+      conn.release();
+      let roles: string[] = [];
+      result.rows.forEach(row => roles.push(row.role));
+      return roles;
+    } catch (err) {
+      throw new Error(`Could not get roles: ${err}`);
+    }
+  }
+
+  async addRoles(user: User, roles: string[]): Promise<string[]> {
+    const addedRoles: string[] = [];
+    for (let role of roles) {
+      const addedRole = await this.addRole(user, role);
+      addedRoles.push(addedRole);
+    }
+    return addedRoles;
+  }
+
+  private async addRole(user: User, role: string): Promise<string> {
+    try {
+      const conn = await database.connect();
+      const sql = 'INSERT INTO roles(role, user_id) VALUES($1, $2) RETURNING role';
+      const result = await conn.query(sql, [role, user.id]);
+      conn.release();
+      return result.rows[0].role;
+    } catch (err) {
+      throw new Error(`Could not add role: ${err}`);
     }
   }
 

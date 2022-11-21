@@ -28,8 +28,15 @@ userRoute.get('/show/:id', verifyAuthToken, async (req: express.Request, res: ex
 
 userRoute.post('/create', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const newUser: User = await userStore.addUser(req.body);
-    const token = jwt.sign({ user: newUser }, process.env.TOKEN_SECRET!);
+    const user: User = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      username: req.body.username,
+      password: req.body.password
+    };
+    const newUser: User = await userStore.addUser(user);
+    const newRoles: string[] = await userStore.addRoles(newUser, ['USER']);
+    const token = jwt.sign({ user: newUser, roles: newRoles }, process.env.TOKEN_SECRET!);
     res.status(HttpStatusCode.OK).send(token);
   } catch (err) {
     next(err);
@@ -40,10 +47,12 @@ userRoute.post('/authenticate', async (req: express.Request, res: express.Respon
   try {
     const authenticatedUser: User | null = await userStore.authenticateUser(req.body.username, req.body.password);
     if (authenticatedUser) {
-      const token = jwt.sign({ user: authenticatedUser }, process.env.TOKEN_SECRET!);
+      const authenticatedUserRoles: string[] = await userStore.getRoles(authenticatedUser);
+      const token = jwt.sign({ user: authenticatedUser, roles: authenticatedUserRoles }, process.env.TOKEN_SECRET!);
       res.status(HttpStatusCode.OK).send(token);
+    } else {
+      res.sendStatus(HttpStatusCode.BAD_REQUEST);
     }
-    res.sendStatus(HttpStatusCode.BAD_REQUEST);
   } catch (err) {
     next(err);
   }

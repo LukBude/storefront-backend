@@ -27,7 +27,10 @@ orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: e
 
 orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const order: Order = { 'user_id': req.body.user_id, 'status': req.body.status };
+    const order: Order = {
+      'user_id': req.body.user_id,
+      'status': req.body.status
+    };
     const newOrder: Order = await orderStore.addOrder(order);
     for (let product of req.body.products) {
       await orderStore.addProduct(newOrder.id as unknown as string, product.product_id, product.quantity);

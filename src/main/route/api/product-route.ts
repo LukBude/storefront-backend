@@ -3,6 +3,7 @@ import { ProductStore } from '../../model/ProductStore';
 import { Product } from '../../model/product';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import { verifyAuthToken } from '../../middleware/authentication';
+import { verifyRoles } from '../../middleware/authorization';
 
 const productRoute = express.Router();
 const productStore = new ProductStore();
@@ -25,9 +26,14 @@ productRoute.get('/show/:id', async (req: express.Request, res: express.Response
   }
 });
 
-productRoute.post('/create', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+productRoute.post('/create', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const newProduct: Product = await productStore.addProduct(req.body);
+    const product: Product = {
+      name: req.body.name,
+      price: req.body.price,
+      category: req.body.category
+    };
+    const newProduct: Product = await productStore.addProduct(product);
     res.status(HttpStatusCode.OK).send(newProduct);
   } catch (err) {
     next(err);
