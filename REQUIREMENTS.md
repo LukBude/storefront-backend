@@ -13,21 +13,23 @@ data shapes the frontend and backend have agreed meet the requirements of the ap
 
 - Index: [GET] products/index
 - Show : [GET] products/show/:id
-- Create [token required]: [POST] products/create
+- Create [token required, Role ADMIN]: [POST] products/create
 - Top 5 most popular products: [GET] dashboard/products/popular
 - Products by category (args: product category): [GET] dashboard/products/category
 
 #### Users
 
-- Index [token required]: [GET] users/index
-- Show [token required]: [GET] users/show/:id
-- Create [token required]: [POST] users/create
+- Index [token required, ROLE ADMIN]: [GET] users/index
+- Show [token required, ROLE ADMIN]: [GET] users/show/:id
+- Create [token required, ROLE ADMIN]: [POST] users/create
 
 #### Orders
 
 - Current order by user (args: user id) [token required]: [GET] /orders/active
 - Completed orders by user (args: user id) [token required]: [GET] /orders/complete
 - Create [token required]: [POST] orders/create
+- Add product [token required]: [POST] orders/:id/products
+- Close [token required]: [POST] orders/:id/close
 
 ## Data Shapes
 

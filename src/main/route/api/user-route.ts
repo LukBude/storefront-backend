@@ -4,11 +4,12 @@ import { User } from '../../model/user';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import jwt from 'jsonwebtoken';
 import { verifyAuthToken } from '../../middleware/authentication';
+import { verifyRoles } from '../../middleware/authorization';
 
 const userRoute = express.Router();
 const userStore = new UserStore();
 
-userRoute.get('/index', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.get('/index', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const users: User[] = await userStore.getAllUsers();
     res.status(HttpStatusCode.OK).send(users);
@@ -17,7 +18,7 @@ userRoute.get('/index', verifyAuthToken, async (req: express.Request, res: expre
   }
 });
 
-userRoute.get('/show/:id', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.get('/show/:id', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const user: User = await userStore.getUser(req.params.id);
     res.status(HttpStatusCode.OK).send(user);
@@ -26,7 +27,7 @@ userRoute.get('/show/:id', verifyAuthToken, async (req: express.Request, res: ex
   }
 });
 
-userRoute.post('/create', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.post('/create', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const user: User = {
       firstname: req.body.firstname,

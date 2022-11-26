@@ -3,7 +3,7 @@ import database from '../database';
 import { OrderProduct } from './order-product';
 
 export class OrderStore {
-  async getOrder(userId: string): Promise<Order> {
+  async getActiveOrder(userId: string): Promise<Order> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = ($1) AND status = ($2)';
@@ -15,7 +15,7 @@ export class OrderStore {
     }
   }
 
-  async getOrders(userId: string): Promise<Order[]> {
+  async getCompletedOrders(userId: string): Promise<Order[]> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = ($1) AND status = ($2)';
@@ -48,6 +48,18 @@ export class OrderStore {
       return result.rows[0];
     } catch (err) {
       throw new Error(`Cannot add product to order: ${err}`);
+    }
+  }
+
+  async closeOrder(orderId: string): Promise<Order> {
+    try {
+      const conn = await database.connect();
+      const sql = 'UPDATE orders SET status = ($2) WHERE id = ($1) RETURNING *';
+      const result = await conn.query(sql, [orderId, 'complete']);
+      conn.release();
+      return result.rows[0];
+    } catch (err) {
+      throw new Error(`Cannot close order: ${err}`);
     }
   }
 }
