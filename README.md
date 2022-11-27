@@ -33,12 +33,15 @@ set up the database, which provides the actual data. To do so, you need to have 
    TOKEN_SECRET='think of a password used to encrypt your JWT token' \
    \
    The information about the database has to be consistent with the information provided inside the docker-compose.yml.
-   Feel free to use different database names or username and password combinations.
+   Feel free to use different database names or username and password combinations. Notice, however, when changing this
+   information, you need to adapt the database.json file, located in the root folder of the storefront-backend repository, as
+   well.
+   The database.json file contains information required by db-migrate, a node package used for database migration as will be
+   explained in the next step.
 
-4. Once you are done, open a console inside the root folder of the storefront-backend repository and execute the command "
-   db-migrate
-   up".
-   This will create the necessary database tables inside the PostgreSQL database.
+4. Once you are done, you are ready to create the necessary database tables inside the PostgreSQL database. In order to do so,
+   you need to have nodeJs installed. Open a console and navigate to the root folder of the storefront-backend repository. Install
+   all required node dependencies by executing the command "npm install". Finally, execute "db-migrate up".
 
 ## Testing the REST API
 
