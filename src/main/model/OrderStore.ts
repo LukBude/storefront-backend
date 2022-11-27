@@ -1,8 +1,20 @@
 import { Order } from './order';
 import database from '../database';
-import { OrderProduct } from './order-product';
+import { ApiError } from '../error/ApiError';
 
 export class OrderStore {
+  async getOrder(orderId: string): Promise<Order> {
+    try {
+      const conn = await database.connect();
+      const sql = 'SELECT * FROM orders WHERE orders.id = ($1)';
+      const result = await conn.query(sql, [orderId]);
+      conn.release();
+      return result.rows[0];
+    } catch (err) {
+      throw new ApiError(`Cannot get order: ${err}`);
+    }
+  }
+
   async getActiveOrder(userId: string): Promise<Order> {
     try {
       const conn = await database.connect();
@@ -11,7 +23,7 @@ export class OrderStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot get active order: ${err}`);
+      throw new ApiError(`Cannot get active order: ${err}`);
     }
   }
 
@@ -23,7 +35,7 @@ export class OrderStore {
       conn.release();
       return result.rows;
     } catch (err) {
-      throw new Error(`Cannot get completed orders: ${err}`);
+      throw new ApiError(`Cannot get completed orders: ${err}`);
     }
   }
 
@@ -35,19 +47,19 @@ export class OrderStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot add order: ${err}`);
+      throw new ApiError(`Cannot add order: ${err}`);
     }
   }
 
-  async addProduct(orderId: string, productId: string, quantity: string): Promise<OrderProduct> {
+  async addProduct(orderId: string, productId: string, quantity: string): Promise<{ product_id: number, quantity: number }> {
     try {
       const conn = await database.connect();
-      const sql = 'INSERT INTO order_products(order_id, product_id, quantity) VALUES($1, $2, $3) RETURNING *';
+      const sql = 'INSERT INTO order_products(order_id, product_id, quantity) VALUES($1, $2, $3) RETURNING product_id, quantity';
       const result = await conn.query(sql, [orderId, productId, quantity]);
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot add product to order: ${err}`);
+      throw new ApiError(`Cannot add product to order: ${err}`);
     }
   }
 
@@ -59,7 +71,19 @@ export class OrderStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot close order: ${err}`);
+      throw new ApiError(`Cannot close order: ${err}`);
+    }
+  }
+
+  async getProductsOfOrder(orderId: string): Promise<{ product_id: number, quantity: number }[]> {
+    try {
+      const conn = await database.connect();
+      const sql = 'SELECT product_id, quantity FROM order_products op WHERE op.order_id = ($1)';
+      const result = await conn.query(sql, [orderId]);
+      conn.release();
+      return result.rows;
+    } catch (err) {
+      throw new ApiError(`Cannot get products of order: ${err}`);
     }
   }
 }

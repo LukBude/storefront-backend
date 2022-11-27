@@ -17,7 +17,7 @@ dashboardRoute.get('/products/popular', async (req: express.Request, res: expres
 
 dashboardRoute.get('/products/category', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const products: Product[] = await dashboardService.getProductsByCategory(req.body.category);
+    const products: Product[] = await dashboardService.getProductsByCategory(req.query.category as string);
     res.status(HttpStatusCode.OK).send(products);
   } catch (err) {
     next(err);

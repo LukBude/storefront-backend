@@ -1,7 +1,6 @@
 import { OrderStore } from '../../main/model/OrderStore';
 import { Order } from '../../main/model/order';
 import { Product } from '../../main/model/product';
-import { OrderProduct } from '../../main/model/order-product';
 import { ProductStore } from '../../main/model/ProductStore';
 import { UserStore } from '../../main/model/UserStore';
 import { User } from '../../main/model/user';
@@ -32,6 +31,17 @@ describe('Test OrderStore', () => {
     expect(orders).toContain(completedOrder);
   });
 
+  it('getOrder should return requested order', async () => {
+    const completedOrder: Order = await orderStore.addOrder({
+      user_id: user.id!,
+      status: 'complete'
+    });
+
+    const order: Order = await orderStore.getOrder(completedOrder.id as unknown as string);
+
+    expect(order).toEqual(completedOrder);
+  });
+
   it('getActiveOrder should return requested order if active', async () => {
     const activeOrder: Order = await orderStore.addOrder({
       user_id: user.id!,
@@ -40,7 +50,7 @@ describe('Test OrderStore', () => {
 
     const requestedOrder: Order = await orderStore.getActiveOrder(user.id as unknown as string);
 
-    expect(requestedOrder.id).toBe(activeOrder.id);
+    expect(requestedOrder).toEqual(activeOrder);
 
     await orderStore.closeOrder(activeOrder.id as unknown as string);
   });
@@ -71,20 +81,57 @@ describe('Test OrderStore', () => {
       user_id: user.id!,
       status: 'active'
     });
-    const addedProduct: Product = await productStore.addProduct({
-      name: 'Lord of the Rings',
-      price: 24.23,
+    const product: Product = await productStore.addProduct({
+      name: 'Lord of the Rings - The Fellowship of the Ring',
+      price: 15.99,
       category: 'Fantasy'
     });
 
-    const productOfOrder: OrderProduct = await orderStore.addProduct(
+    const productOfOrder: { product_id: number, quantity: number } = await orderStore.addProduct(
       activeOrder.id as unknown as string,
-      addedProduct.id as unknown as string,
+      product.id as unknown as string,
       '2');
 
-    expect(productOfOrder.product_id).toEqual(addedProduct.id!);
-    expect(productOfOrder.order_id).toEqual(activeOrder.id!);
+    expect(productOfOrder.product_id).toEqual(product.id!);
     expect(productOfOrder.quantity).toEqual(2);
+
+    await orderStore.closeOrder(activeOrder.id as unknown as string);
+  });
+
+  it('getProductsOfOrder should return products of order', async () => {
+    const activeOrder: Order = await orderStore.addOrder({
+      user_id: user.id!,
+      status: 'active'
+    });
+    const product_1: Product = await productStore.addProduct({
+      name: 'Lord of the Rings - The Two Towers',
+      price: 16.33,
+      category: 'Fantasy'
+    });
+    const product_2: Product = await productStore.addProduct({
+      name: 'Lord of the Rings - The Return of the King',
+      price: 14.99,
+      category: 'Fantasy'
+    });
+    await orderStore.addProduct(
+      activeOrder.id as unknown as string,
+      product_1.id as unknown as string,
+      '10');
+    await orderStore.addProduct(
+      activeOrder.id as unknown as string,
+      product_2.id as unknown as string,
+      '5');
+
+    const productsOfOrder = await orderStore.getProductsOfOrder(activeOrder.id as unknown as string);
+
+    expect(productsOfOrder).toContain({
+      product_id: product_1.id!,
+      quantity: 10
+    });
+    expect(productsOfOrder).toContain({
+      product_id: product_2.id!,
+      quantity: 5
+    });
 
     await orderStore.closeOrder(activeOrder.id as unknown as string);
   });

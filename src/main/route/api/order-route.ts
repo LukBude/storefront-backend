@@ -3,24 +3,39 @@ import { OrderStore } from '../../model/OrderStore';
 import { Order } from '../../model/order';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import { verifyAuthToken } from '../../middleware/authentication';
-import { OrderProduct } from '../../model/order-product';
+import { OrderDto } from '../../model/order-dto';
 
 const orderRoute = express.Router();
 const orderStore = new OrderStore();
 
-orderRoute.get('/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+orderRoute.get('/:id/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const order: Order = await orderStore.getActiveOrder(req.body.user_id);
-    res.status(HttpStatusCode.OK).send(order);
+    const order: Order = await orderStore.getActiveOrder(req.params.id);
+    const response: OrderDto = {
+      user_id: order.user_id,
+      order_id: order.id!,
+      status: order.status,
+      products: await orderStore.getProductsOfOrder(req.params.id)
+    };
+    res.status(HttpStatusCode.OK).send(response);
   } catch (err) {
     next(err);
   }
 });
 
-orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+orderRoute.get('/:id/complete', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const orders: Order[] = await orderStore.getCompletedOrders(req.body.user_id);
-    res.status(HttpStatusCode.OK).send(orders);
+    const orders: Order[] = await orderStore.getCompletedOrders(req.params.id);
+    const response: OrderDto[] = [];
+    for (const order of orders) {
+      response.push({
+        user_id: order.user_id,
+        order_id: order.id!,
+        status: order.status,
+        products: await orderStore.getProductsOfOrder(req.params.id)
+      });
+    }
+    res.status(HttpStatusCode.OK).send(response);
   } catch (err) {
     next(err);
   }
@@ -50,12 +65,19 @@ orderRoute.post(':id/close', verifyAuthToken, async (req: express.Request, res: 
 
 orderRoute.post('/:id/products', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const productsOfOrders: OrderProduct[] = [];
-    for (let product of req.body.products) {
-      const addedProduct = await orderStore.addProduct(req.params.id, product.product_id, product.quantity);
-      productsOfOrders.push(addedProduct);
+    for (const product of req.body.products) {
+      await orderStore.addProduct(req.params.id, product.product_id, product.quantity);
     }
-    res.status(HttpStatusCode.OK).send(productsOfOrders);
+
+    const order: Order = await orderStore.getOrder(req.params.id);
+    const response: OrderDto = {
+      user_id: order.user_id,
+      order_id: order.id!,
+      status: order.status,
+      products: await orderStore.getProductsOfOrder(req.params.id)
+    };
+
+    res.status(HttpStatusCode.OK).send(response);
   } catch (err) {
     next(err);
   }

@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { HttpStatusCode } from '../error/HttpStatusCode';
 import { JwtPayload } from './jwt-payload';
+import { UnauthorizedError } from '../error/UnauthorizedError';
 
 export const verifyAuthToken = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
@@ -11,6 +11,6 @@ export const verifyAuthToken = (req: express.Request, res: express.Response, nex
     req.body.roles = decoded.roles;
     next();
   } catch (err) {
-    return res.sendStatus(HttpStatusCode.UNAUTHORIZED);
+    throw new UnauthorizedError(`User is unauthorized to access this route: ${err}`);
   }
 };

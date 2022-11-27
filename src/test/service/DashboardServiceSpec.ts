@@ -11,7 +11,7 @@ describe('Test DashboardService', () => {
   const userStore: UserStore = new UserStore();
   const productStore: ProductStore = new ProductStore();
   const orderStore: OrderStore = new OrderStore();
-  
+
   let user_1: User;
   let user_2: User;
   let order_1: Order;
@@ -77,16 +77,16 @@ describe('Test DashboardService', () => {
       category: 'Anthropology'
     });
 
-    await orderStore.addProduct(order_1.id as unknown as string, product_1.id as unknown as string, '5');
-    await orderStore.addProduct(order_1.id as unknown as string, product_2.id as unknown as string, '4');
-    await orderStore.addProduct(order_1.id as unknown as string, product_3.id as unknown as string, '3');
-    await orderStore.addProduct(order_1.id as unknown as string, product_4.id as unknown as string, '2');
-    await orderStore.addProduct(order_1.id as unknown as string, product_5.id as unknown as string, '1');
-    await orderStore.addProduct(order_2.id as unknown as string, product_1.id as unknown as string, '5');
-    await orderStore.addProduct(order_2.id as unknown as string, product_2.id as unknown as string, '4');
-    await orderStore.addProduct(order_2.id as unknown as string, product_3.id as unknown as string, '3');
-    await orderStore.addProduct(order_2.id as unknown as string, product_4.id as unknown as string, '2');
-    await orderStore.addProduct(order_2.id as unknown as string, product_5.id as unknown as string, '1');
+    await orderStore.addProduct(order_1.id as unknown as string, product_1.id as unknown as string, '50');
+    await orderStore.addProduct(order_1.id as unknown as string, product_2.id as unknown as string, '40');
+    await orderStore.addProduct(order_1.id as unknown as string, product_3.id as unknown as string, '30');
+    await orderStore.addProduct(order_1.id as unknown as string, product_4.id as unknown as string, '20');
+    await orderStore.addProduct(order_1.id as unknown as string, product_5.id as unknown as string, '10');
+    await orderStore.addProduct(order_2.id as unknown as string, product_1.id as unknown as string, '50');
+    await orderStore.addProduct(order_2.id as unknown as string, product_2.id as unknown as string, '40');
+    await orderStore.addProduct(order_2.id as unknown as string, product_3.id as unknown as string, '30');
+    await orderStore.addProduct(order_2.id as unknown as string, product_4.id as unknown as string, '20');
+    await orderStore.addProduct(order_2.id as unknown as string, product_5.id as unknown as string, '10');
   });
 
   it('getMostPopularProducts should return the 3 most popular products', async () => {

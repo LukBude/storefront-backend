@@ -18,7 +18,7 @@ userRoute.get('/index', verifyAuthToken, verifyRoles('ADMIN'), async (req: expre
   }
 });
 
-userRoute.get('/show/:id', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.get('/:id/show', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const user: User = await userStore.getUser(req.params.id);
     res.status(HttpStatusCode.OK).send(user);

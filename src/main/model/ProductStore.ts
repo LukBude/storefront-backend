@@ -1,5 +1,6 @@
 import { Product } from './product';
 import database from '../database';
+import { ApiError } from '../error/ApiError';
 
 export class ProductStore {
   async getAllProducts(): Promise<Product[]> {
@@ -10,7 +11,7 @@ export class ProductStore {
       conn.release();
       return result.rows;
     } catch (err) {
-      throw new Error(`Cannot get products: ${err}`);
+      throw new ApiError(`Cannot get products: ${err}`);
     }
   }
 
@@ -22,7 +23,7 @@ export class ProductStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot get product with id ${id}: ${err}`);
+      throw new ApiError(`Cannot get product with id ${id}: ${err}`);
     }
   }
 
@@ -34,7 +35,7 @@ export class ProductStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Cannot add product: ${err}`);
+      throw new ApiError(`Cannot add product: ${err}`);
     }
   }
 }

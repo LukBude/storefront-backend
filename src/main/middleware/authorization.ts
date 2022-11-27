@@ -1,10 +1,10 @@
 import express from 'express';
-import { HttpStatusCode } from '../error/HttpStatusCode';
+import { ForbiddenError } from '../error/ForbiddenError';
 
 export const verifyRoles = (...allowedRoles: string[]) => {
   return (req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (!req.body.roles.some((role: string) => allowedRoles.includes(role))) {
-      return res.sendStatus(HttpStatusCode.FORBIDDEN);
+      throw new ForbiddenError('User is forbidden to access this route');
     }
     next();
   };

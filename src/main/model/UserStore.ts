@@ -1,6 +1,7 @@
 import { User } from './user';
 import database from '../database';
 import bcrypt from 'bcrypt';
+import { ApiError } from '../error/ApiError';
 
 export class UserStore {
   private pepper = process.env.BCRYPT_PASSWORD;
@@ -14,7 +15,7 @@ export class UserStore {
       conn.release();
       return result.rows;
     } catch (err) {
-      throw new Error(`Could not get users: ${err}`);
+      throw new ApiError(`Could not get users: ${err}`);
     }
   }
 
@@ -26,7 +27,7 @@ export class UserStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Could not get user: ${err}`);
+      throw new ApiError(`Could not get user: ${err}`);
     }
   }
 
@@ -39,7 +40,7 @@ export class UserStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`Could not add user: ${err}`);
+      throw new ApiError(`Could not add user: ${err}`);
     }
   }
 
@@ -57,7 +58,7 @@ export class UserStore {
       }
       return null;
     } catch (err) {
-      throw new Error(`Could not authenticate user: ${err}`);
+      throw new ApiError(`Could not authenticate user: ${err}`);
     }
   }
 
@@ -71,7 +72,7 @@ export class UserStore {
       result.rows.forEach(row => roles.push(row.role));
       return roles;
     } catch (err) {
-      throw new Error(`Could not get roles: ${err}`);
+      throw new ApiError(`Could not get roles: ${err}`);
     }
   }
 
@@ -92,7 +93,7 @@ export class UserStore {
       conn.release();
       return result.rows[0].role;
     } catch (err) {
-      throw new Error(`Could not add role: ${err}`);
+      throw new ApiError(`Could not add role: ${err}`);
     }
   }
 
