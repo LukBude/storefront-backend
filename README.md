@@ -35,9 +35,7 @@ set up the database, which provides the actual data. To do so, you need to have 
    The information about the database has to be consistent with the information provided inside the docker-compose.yml.
    Feel free to use different database names or username and password combinations.
 
-4. Once you are done, open a console inside the root folder of the storefront-backend repository and execute the command "
-   db-migrate
-   up".
+4. Once you are done, open a console inside the root folder of the storefront-backend repository and execute the command "db-migrate up".
    This will create the necessary database tables inside the PostgreSQL database.
 
 ## Testing the REST API
