@@ -145,6 +145,6 @@ describe('Test OrderStore', () => {
     const closedOrder = await orderStore.closeOrder(activeOrder.id as unknown as string);
 
     expect(closedOrder.id).toBe(activeOrder.id);
-    expect(closedOrder.status).toEqual('Complete');
+    expect(closedOrder.status).toEqual('complete');
   });
 });
