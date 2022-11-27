@@ -8,14 +8,14 @@ import { OrderDto } from '../../model/order-dto';
 const orderRoute = express.Router();
 const orderStore = new OrderStore();
 
-orderRoute.get('/:id/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+orderRoute.get('/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const order: Order = await orderStore.getActiveOrder(req.params.id);
+    const order: Order = await orderStore.getActiveOrder(req.body.user.id);
     const response: OrderDto = {
       user_id: order.user_id,
       order_id: order.id!,
       status: order.status,
-      products: await orderStore.getProductsOfOrder(req.params.id)
+      products: await orderStore.getProductsOfOrder(order.id as unknown as string)
     };
     res.status(HttpStatusCode.OK).send(response);
   } catch (err) {
@@ -23,16 +23,16 @@ orderRoute.get('/:id/active', verifyAuthToken, async (req: express.Request, res:
   }
 });
 
-orderRoute.get('/:id/complete', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const orders: Order[] = await orderStore.getCompletedOrders(req.params.id);
+    const orders: Order[] = await orderStore.getCompletedOrders(req.body.user.id);
     const response: OrderDto[] = [];
     for (const order of orders) {
       response.push({
         user_id: order.user_id,
         order_id: order.id!,
         status: order.status,
-        products: await orderStore.getProductsOfOrder(req.params.id)
+        products: await orderStore.getProductsOfOrder(order.id as unknown as string)
       });
     }
     res.status(HttpStatusCode.OK).send(response);
@@ -44,7 +44,7 @@ orderRoute.get('/:id/complete', verifyAuthToken, async (req: express.Request, re
 orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const order: Order = {
-      'user_id': req.body.user_id,
+      'user_id': req.body.user.id,
       'status': 'active'
     };
     const newOrder: Order = await orderStore.addOrder(order);
@@ -54,7 +54,7 @@ orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: ex
   }
 });
 
-orderRoute.post(':id/close', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+orderRoute.post('/:id/close', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const closedOrder = await orderStore.closeOrder(req.params.id);
     res.status(HttpStatusCode.OK).send(closedOrder);

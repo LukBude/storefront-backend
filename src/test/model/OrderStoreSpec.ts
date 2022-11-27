@@ -135,4 +135,16 @@ describe('Test OrderStore', () => {
 
     await orderStore.closeOrder(activeOrder.id as unknown as string);
   });
+
+  it('closeOrder should change the status of an active order to complete', async () => {
+    const activeOrder: Order = await orderStore.addOrder({
+      user_id: user.id!,
+      status: 'active'
+    });
+
+    const closedOrder = await orderStore.closeOrder(activeOrder.id as unknown as string);
+
+    expect(closedOrder.id).toBe(activeOrder.id);
+    expect(closedOrder.status).toEqual('Complete');
+  });
 });

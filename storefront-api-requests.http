@@ -1,0 +1,203 @@
+### Create User
+### --> after user has been created, add another row to roles, assigning John Smith the role ADMIN
+POST http://localhost:3000/api/users/create
+Content-Type: application/json
+
+{
+  "firstname": "John",
+  "lastname": "Smith",
+  "username": "john.smith@gmail.com",
+  "password": "password"
+}
+
+### Create User
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/users/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "firstname": "Jane",
+  "lastname": "Smith",
+  "username": "jane.smith@gmail.com",
+  "password": "secret"
+}
+
+### Authenticate User John Smith
+### --> this action returns the Bearer-token of John Smith
+POST http://localhost:3000/api/users/authenticate
+Content-Type: application/json
+
+{
+  "username": "john.smith@gmail.com",
+  "password": "password"
+}
+
+### Authenticate User Jane Smith
+### --> this action returns the Bearer-token of Jane Smith
+POST http://localhost:3000/api/users/authenticate
+Content-Type: application/json
+
+{
+  "username": "jane.smith@gmail.com",
+  "password": "secret"
+}
+
+### Show User Index
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+GET http://localhost:3000/api/users/index
+authorization: Bearer *John Smith's token*
+
+### Show User John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+GET http://localhost:3000/api/users/1/show
+authorization: Bearer *John Smith's token*
+
+### Create Products
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/products/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "name": "The Night of Wishes",
+  "price": 17.00,
+  "category": "Fantasy"
+}
+
+### Create Products
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/products/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "name": "Prisoners of Geography",
+  "price": 19.99,
+  "category": "Politics"
+}
+
+### Create Products
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/products/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "name": "Sapiens - A Brief History of Humankind",
+  "price": 29.99,
+  "category": "Anthropology"
+}
+
+### Create Products
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/products/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "name": "Brave New World",
+  "price": 16.19,
+  "category": "Science Fiction"
+}
+
+### Create Products
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/products/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "name": "Nineteen-Eighty-Four: 1984",
+  "price": 13.40,
+  "category": "Science Fiction"
+}
+
+### Show Products Index
+GET http://localhost:3000/api/products/index
+
+### Show Product 1 - A Night of Wishes
+GET http://localhost:3000/api/products/1/show
+
+### Create Order for John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whom we want to create a new order for
+POST http://localhost:3000/api/orders/create
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+### Add Products to Order of John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whom we want to add a product to an active order for
+POST http://localhost:3000/api/orders/1/products
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "products": [
+    {
+      "product_id": "1",
+      "quantity": "15"
+    },
+    {
+      "product_id": "2",
+      "quantity": "10"
+    },
+    {
+      "product_id": "3",
+      "quantity": "5"
+    }
+  ]
+}
+
+### Create Order for Jane Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whom we want to create a new order for
+POST http://localhost:3000/api/orders/create
+Content-Type: application/json
+authorization: Bearer *Jane Smith's token*
+
+
+### Add Products to Order of Jane Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whom we want to add a product to an active order for
+POST http://localhost:3000/api/orders/2/products
+Content-Type: application/json
+authorization: Bearer *Jane Smith's token*
+
+{
+  "products": [
+    {
+      "product_id": "1",
+      "quantity": "15"
+    },
+    {
+      "product_id": "2",
+      "quantity": "10"
+    },
+    {
+      "product_id": "3",
+      "quantity": "3"
+    }
+  ]
+}
+
+### Get Active Orders of John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whose active order we are requesting
+GET http://localhost:3000/api/orders/active
+authorization: Bearer *John Smith's token*
+
+### Close Order of John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whose active order we want to close
+POST http://localhost:3000/api/orders/3/close
+authorization: Bearer *John Smith's token*
+
+### GET Completed Orders of John Smith
+### --> this action requires an authorization-Header containing the Bearer-token of the user, whose completed orders we are requesting
+GET http://localhost:3000/api/orders/complete
+authorization: Bearer *John Smith's token*
+
+### GET the 3 most popular products
+### ---> expect products 1, 2 and 3
+GET http://localhost:3000/api/dashboard/products/popular
+
+### GET products by category 'Science Fiction'
+### --> expect products 4 and 5
+GET http://localhost:3000/api/dashboard/products?category=Science Fiction
+
