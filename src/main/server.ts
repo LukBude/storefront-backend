@@ -29,3 +29,5 @@ server.use((err: Error, _req: express.Request, res: express.Response, _next: exp
 server.listen(port, () => {
   console.log(`server is listening on: http://localhost:${3000}`);
 });
+
+export default server;

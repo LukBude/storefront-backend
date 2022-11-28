@@ -13,9 +13,9 @@ set up the database, which provides the actual data. To do so, you need to have 
    "docker-compose up". \
    &#8594; This command will create two docker containers, which run a PostgreSQL database each. Open the
    docker-compose.yml for more information about the databases, such as the respective database name and the username and password
-   combination required
-   to connect to it. Notice that only one of the databases holds the data, which the storefront API works with. The other database
-   exists for test purposes only.
+   combination required to connect to it, as well as the ports the docker containers are exposing.
+   Notice that only one of the databases holds the data, which the storefront API works with. The other database exists for test
+   purposes only.
 3. You will now have to create a .env file inside the root folder of the storefront-backend repository. This file contains
    important
    information about both the database and encryption. Make sure to include the following entries inside the .env file: \
@@ -45,7 +45,7 @@ set up the database, which provides the actual data. To do so, you need to have 
 
 ## Testing the REST API
 
-Once the database is up and running, you can go ahead and test the REST API. For this purpose, you need to have nodJs installed.
+Once the database is up and running, you can go ahead and test the REST API.
 
 1. Navigate into the storefront-backend repository once again and open a console.
    This repository contains a package.json, which includes several node scripts.
@@ -57,8 +57,8 @@ Once the database is up and running, you can go ahead and test the REST API. For
    to bottom. Some of the endpoints require authentication and some require authorization on top of this. In order to be able to
    test
    requests, which require authorization, you will first have to create a user - this is the first request inside the
-   storefront-api-requests.http - and in a second step add an entry to the table roles, which assigns the role 'ADMIN' to the new
-   user.
+   storefront-api-requests.http - and in a second step add an entry to the table roles, assigning the additional role 'ADMIN' to
+   the new user.
    You can now execute the Http-requests one after the other, just be sure to provide the JWT token required for authentication
    wherever
    indicated in the storefront-api-request.http file.
