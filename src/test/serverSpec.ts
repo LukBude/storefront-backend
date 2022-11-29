@@ -3,10 +3,9 @@ import server from '../main/server';
 import { User } from '../main/model/user';
 import { UserStore } from '../main/model/UserStore';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { verifyRoles } from '../main/middleware/authorization';
 import { JwtPayload } from '../main/middleware/jwt-payload';
 import express from 'express';
+import bcrypt from 'bcrypt';
 
 describe('Test API endpoints', () => {
   const request = supertest(server);
@@ -26,8 +25,8 @@ describe('Test API endpoints', () => {
   });
 
   it('/api/users/create', async () => {
-    const verifyAuthTokenSpy = jasmine.createSpy('verifyAuthToken');
-    const verifyRolesSpy = jasmine.createSpy('verifyRoles');
+    const verifyAuthTokenSpy = jasmine.createSpy('verifyAuthToken').and.callThrough();
+    const verifyRolesSpy = jasmine.createSpy('verifyRoles').and.callThrough();
     const requestBody: User = {
       firstname: 'Bart',
       lastname: 'Simpson',
@@ -38,7 +37,7 @@ describe('Test API endpoints', () => {
     const response = await request
       .post('/api/users/create')
       .send(requestBody)
-      .set('Authorization', `Bearer ${adminToken}`);
+      .set('authorization', `Bearer ${adminToken}`);
 
     console.log(response.status);
     console.log(response.body);
