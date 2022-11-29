@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import { JwtPayload } from '../main/middleware/jwt-payload';
 import express from 'express';
 import bcrypt from 'bcrypt';
+import * as authenticationMiddleware from '../main/middleware/authentication';
+import * as authorizationMiddleware from '../main/middleware/authorization';
 
 describe('Test API endpoints', () => {
   const request = supertest(server);
@@ -25,8 +27,8 @@ describe('Test API endpoints', () => {
   });
 
   it('/api/users/create', async () => {
-    const verifyAuthTokenSpy = jasmine.createSpy('verifyAuthToken').and.callThrough();
-    const verifyRolesSpy = jasmine.createSpy('verifyRoles').and.callThrough();
+    const verifyAuthTokenSpy = spyOn(authenticationMiddleware, 'verifyAuthToken').and.callThrough();
+    const verifyRolesSpy = spyOn(authorizationMiddleware, 'verifyRoles').and.callThrough();
     const requestBody: User = {
       firstname: 'Bart',
       lastname: 'Simpson',
@@ -53,8 +55,8 @@ describe('Test API endpoints', () => {
   });
 
   it('/api/users/create', async () => {
-    const verifyAuthTokenSpy = jasmine.createSpy('verifyAuthToken').and.callFake((req, res, next) => next());
-    const verifyRolesSpy = jasmine.createSpy('verifyRoles').and.callFake((...allowedRoles) => {
+    const verifyAuthTokenSpy = spyOn(authenticationMiddleware, 'verifyAuthToken').and.callFake((req, res, next) => next());
+    const verifyRolesSpy = spyOn(authorizationMiddleware, 'verifyRoles').and.callFake((...allowedRoles) => {
       return (req: express.Request, res: express.Response, next: express.NextFunction) => next();
     });
     const requestBody: User = {
@@ -67,6 +69,8 @@ describe('Test API endpoints', () => {
     const response = await request
       .post('/api/users/create')
       .send(requestBody);
+
+    console.log(response.text);
 
     const decodedResponseToken = jwt.verify(response.text, process.env.TOKEN_SECRET!) as JwtPayload;
 
