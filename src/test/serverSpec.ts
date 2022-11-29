@@ -40,9 +40,9 @@ describe('Test API endpoints', () => {
       .set('authorization', `Bearer ${adminToken}`);
 
     console.log(response.status);
-    console.log(response.body);
+    console.log(response.text);
 
-    const decodedResponseToken = jwt.verify(response.body, process.env.TOKEN_SECRET!) as JwtPayload;
+    const decodedResponseToken = jwt.verify(response.text, process.env.TOKEN_SECRET!) as JwtPayload;
 
     expect(verifyAuthTokenSpy).toHaveBeenCalled();
     expect(verifyRolesSpy).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe('Test API endpoints', () => {
       .post('/api/users/create')
       .send(requestBody);
 
-    const decodedResponseToken = jwt.verify(response.body, process.env.TOKEN_SECRET!) as JwtPayload;
+    const decodedResponseToken = jwt.verify(response.text, process.env.TOKEN_SECRET!) as JwtPayload;
 
     expect(verifyAuthTokenSpy).toHaveBeenCalled();
     expect(verifyRolesSpy).toHaveBeenCalledWith('ADMIN');
