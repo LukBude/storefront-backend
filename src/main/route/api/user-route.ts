@@ -27,7 +27,7 @@ userRoute.get('/:id/show', verifyAuthToken, verifyRoles('ADMIN'), async (req: ex
   }
 });
 
-userRoute.post('/create', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.post('/create', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const user: User = {
       firstname: req.body.firstname,
