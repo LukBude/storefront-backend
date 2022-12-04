@@ -55,16 +55,13 @@ Once the database is up and running, you can go ahead and test the REST API.
    integrated in an IDE. To make testing the storefront API a little bit easier, I have created the storefront-api-requests.http
    file, which allows for executing HTTP-requests, for example by using IntelliJ's HttpClient. Execute the Http-requests from top
    to bottom. Some of the endpoints require authentication and some require authorization on top of this. In order to be able to
-   test
-   requests, which require authorization, you will first have to create a user - this is the first request inside the
-   storefront-api-requests.http - and in a second step add an entry to the table roles, assigning the additional role 'ADMIN' to
-   the new user.
-   You can now execute the Http-requests one after the other, just be sure to provide the JWT token required for authentication
-   wherever
-   indicated in the storefront-api-request.http file.
+   test requests, which require authorization, you will first have to create a user - this is the first request inside the
+   storefront-api-requests.http - and in a second step add an entry to the table <em>roles<\em>, assigning the additional role 'ADMIN' to
+   the new user. This is the only manual change to the database, which you have to do. Afterwards, you can execute the Http-requests 
+   one after the other, just be sure to provide the JWT token required for authentication wherever indicated in the storefront-api-request.http file.
 
 ## Run Jasmine Tests
 
-The different store models as well as the dashboard service have been tested using Jasmine.
-In order to execute these tests, open a console inside the root folder of the
+The different store models as well as the dashboard service have been tested via unit tests by making use of jasmine. The endpoints have been tested
+by making use of jasmine in combination with the node module supertest. In order to execute these tests, open a console inside the root folder of the 
 storefront-backend repository and execute the command "npm run test". 
