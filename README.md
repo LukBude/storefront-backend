@@ -56,13 +56,11 @@ Once the database is up and running, you can go ahead and test the REST API.
    file, which allows for executing HTTP-requests, for example by using IntelliJ's HttpClient. Execute the Http-requests from top
    to bottom. Some of the endpoints require authentication and some require authorization on top of this. In order to be able to
    test requests, which require authorization, you will first have to create a user - this is the first request in the
-   storefront-api-requests.http file. This request will only work, however, when removing the verifyAuthToken and verifyRoles('
-   ADMIN')
-   middleware from the route '/api/users/create'. After you have successfully created a user, add an entry to the table
+   storefront-api-requests.http file. This request will only work, however, when removing the verifyAuthToken and 
+   verifyRoles('ADMIN') middleware from the route '/api/users/create'. After you have successfully created a user, add an entry to the table
    <em>roles</em>, assigning the additional role 'ADMIN' to the new user. This is the only manual change to the database, which
    you have to do. Make sure to add the middleware to the route again. Afterwards, you can execute the Http-requests one after the
-   other,
-   just be sure to provide the JWT token required for authentication wherever indicated in the storefront-api-request.http file.
+   other, just be sure to provide the JWT token required for authentication wherever indicated in the storefront-api-request.http file.
 
 ## Run Jasmine Tests
 
