@@ -1,7 +1,4 @@
-### Create User
-### --> In order to create an ADMIN user, you will first have to remove the verifyAuthToken and verifyRoles('ADMIN') middleware from the corresponding user-route.
-### Make sure to add this middleware to the route again, after the user has been created.
-### Once the user has been created, add an entry to the table 'roles', assigning the role 'ADMIN' to the user you have just created.
+### Create User John Smith
 POST http://localhost:3000/api/users/create
 Content-Type: application/json
 
@@ -12,12 +9,17 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Create User
-### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
-### --> the required Bearer-token can be obtained by executing the next command (Authenticate User John Smith)
+### Add Role 'ADMIN' to User John Smith
+POST http://localhost:3000/api/users/1/add-Role
+Content-Type: application/json
+
+{
+  "role": "ADMIN"
+}
+
+### Create User Jane Smith
 POST http://localhost:3000/api/users/create
 Content-Type: application/json
-authorization: Bearer *John Smith's token*
 
 {
   "firstname": "Jane",

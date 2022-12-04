@@ -8,11 +8,11 @@ import bcrypt from 'bcrypt';
 
 describe('Test user route', () => {
   const request = supertest(server);
+  const userStore = new UserStore();
   let admin: User;
   let adminToken: string;
 
   beforeAll(async () => {
-    const userStore = new UserStore();
     admin = await userStore.addUser({
       firstname: 'Homer',
       lastname: 'Simpson',
@@ -58,6 +58,26 @@ describe('Test user route', () => {
     expect(decodedResponseToken.user.lastname).toEqual(requestBody.lastname);
     expect(decodedResponseToken.user.username).toEqual(requestBody.username);
     expect(comparePasswords(decodedResponseToken.user.password, requestBody.password)).toBe(true);
+  });
+
+  it('/api/users/:id/add-role', async () => {
+    const user: User = await userStore.addUser({
+      firstname: 'Selma',
+      lastname: 'Bouvier',
+      username: 'selma.bouvier@gmail.com',
+      password: 'password'
+    });
+    const requestBody = {
+      role: 'ADMIN'
+    };
+
+    const response = await request
+      .post(`/api/users/${user.id}/add-role`)
+      .send(requestBody);
+
+    const decodedResponseToken = jwt.verify(response.text, process.env.TOKEN_SECRET!) as JwtPayload;
+
+    expect(decodedResponseToken.roles).toContain('ADMIN');
   });
 
   it('/api/users/authenticate', async () => {

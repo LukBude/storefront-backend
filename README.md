@@ -53,14 +53,10 @@ Once the database is up and running, you can go ahead and test the REST API.
    This command will start an express server on port 3000 of your localhost.
 2. The different endpoints provided by the storefront API can be tested using Postman or any other HttpClient, often already
    integrated in an IDE. To make testing the storefront API a little bit easier, I have created the storefront-api-requests.http
-   file, which allows for executing HTTP-requests, for example by using IntelliJ's HttpClient. Execute the Http-requests from top
-   to bottom. Some of the endpoints require authentication and some require authorization on top of this. In order to be able to
-   test requests, which require authorization, you will first have to create a user - this is the first request in the
-   storefront-api-requests.http file. This request will only work, however, when removing the verifyAuthToken and 
-   verifyRoles('ADMIN') middleware from the route '/api/users/create'. After you have successfully created a user, add an entry to the table
-   <em>roles</em>, assigning the additional role 'ADMIN' to the new user. This is the only manual change to the database, which
-   you have to do. Make sure to add the middleware to the route again. Afterwards, you can execute the Http-requests one after the
-   other, just be sure to provide the JWT token required for authentication wherever indicated in the storefront-api-request.http file.
+   file, which allows for executing HTTP-requests, for example by using the HttpClient of the IDE <em>IntelliJ</em>.
+   Execute the Http-requests from top to bottom. Some of the endpoints require authentication and some require authorization
+   on top of this. When you execute the Http-requests, be sure to provide the correct JWT required for authentication and
+   authorization wherever indicated in the storefront-api-request.http file.
 
 ## Run Jasmine Tests
 

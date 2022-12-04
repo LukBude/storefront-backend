@@ -44,6 +44,17 @@ userRoute.post('/create', async (req: express.Request, res: express.Response, ne
   }
 });
 
+userRoute.post('/:id/add-Role', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  try {
+    const user: User = await userStore.getUser(req.params.id);
+    const newRoles: string[] = await userStore.addRoles(user, [req.body.role]);
+    const token = jwt.sign({ user: user, roles: newRoles }, process.env.TOKEN_SECRET!);
+    res.status(HttpStatusCode.OK).send(token);
+  } catch (err) {
+    next(err);
+  }
+});
+
 userRoute.post('/authenticate', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const authenticatedUser: User | null = await userStore.authenticateUser(req.body.username, req.body.password);
