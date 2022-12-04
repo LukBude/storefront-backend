@@ -56,7 +56,7 @@ orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: ex
 
 orderRoute.post('/:id/close', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const closedOrder = await orderStore.closeOrder(req.params.id);
+    const closedOrder: Order = await orderStore.closeOrder(req.params.id);
     res.status(HttpStatusCode.OK).send(closedOrder);
   } catch (err) {
     next(err);

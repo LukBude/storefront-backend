@@ -50,6 +50,7 @@ describe('Test OrderStore', () => {
 
     const requestedOrder: Order = await orderStore.getActiveOrder(user.id as unknown as string);
 
+    expect(requestedOrder.id).toBe(activeOrder.id);
     expect(requestedOrder).toEqual(activeOrder);
 
     await orderStore.closeOrder(activeOrder.id as unknown as string);
@@ -95,7 +96,7 @@ describe('Test OrderStore', () => {
     expect(productOfOrder.product_id).toEqual(product.id!);
     expect(productOfOrder.quantity).toEqual(2);
 
-    await orderStore.closeOrder(activeOrder.id as unknown as string);
+    await orderStore.removeOrder(activeOrder.id as unknown as string);
   });
 
   it('getProductsOfOrder should return products of order', async () => {
@@ -133,7 +134,7 @@ describe('Test OrderStore', () => {
       quantity: 5
     });
 
-    await orderStore.closeOrder(activeOrder.id as unknown as string);
+    await orderStore.removeOrder(activeOrder.id as unknown as string);
   });
 
   it('closeOrder should change the status of an active order to complete', async () => {

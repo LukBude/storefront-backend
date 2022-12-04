@@ -89,6 +89,11 @@ describe('Test DashboardService', () => {
     await orderStore.addProduct(order_2.id as unknown as string, product_5.id as unknown as string, '10');
   });
 
+  afterAll(() => {
+    orderStore.removeOrder(order_1.id as unknown as string);
+    orderStore.removeOrder(order_2.id as unknown as string);
+  });
+
   it('getMostPopularProducts should return the 3 most popular products', async () => {
     const products: Product[] = await dashboardService.getMostPopularProducts();
     expect(products).toEqual([product_1, product_2, product_3]);

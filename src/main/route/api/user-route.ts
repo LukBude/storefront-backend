@@ -38,7 +38,6 @@ userRoute.post('/create', verifyAuthToken, verifyRoles('ADMIN'), async (req: exp
     const newUser: User = await userStore.addUser(user);
     const newRoles: string[] = await userStore.addRoles(newUser, ['USER']);
     const token = jwt.sign({ user: newUser, roles: newRoles }, process.env.TOKEN_SECRET!);
-    console.log(token);
     res.status(HttpStatusCode.OK).send(token);
   } catch (err) {
     next(err);

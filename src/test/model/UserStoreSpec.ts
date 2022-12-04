@@ -23,7 +23,9 @@ describe('Test UserStore', () => {
       username: 'samwise.gamgee@lordOfTheRings.com',
       password: 'password'
     });
+
     const requestedUser: User = await userStore.getUser(user.id as unknown as string);
+
     expect(requestedUser.id).toBe(user.id);
   });
 
@@ -35,6 +37,7 @@ describe('Test UserStore', () => {
       username: 'bilbo.baggins@lordOfTheRings.com',
       password: 'password'
     });
+
     const finalAmountOfUsersInStore = (await userStore.getAllUsers()).length;
 
     expect(finalAmountOfUsersInStore).toBe(initialAmountOfUsersInStore + 1);
@@ -47,7 +50,9 @@ describe('Test UserStore', () => {
       username: 'belladonna.took@lordOfTheRings.com',
       password: 'password'
     });
+
     const authenticatedUser: User | null = await userStore.authenticateUser('belladonna.took@lordOfTheRings.com', 'password');
+
     expect(authenticatedUser).toEqual(user);
   });
 
@@ -58,7 +63,9 @@ describe('Test UserStore', () => {
       username: 'lobelia.sackville-baggins@lordOfTheRings.com',
       password: 'password'
     });
+
     const authenticatedUser: User | null = await userStore.authenticateUser('lobelia.sackville-baggins@lordOfTheRings.com', 'wrong password');
+
     expect(authenticatedUser).toBeNull();
   });
 
@@ -69,7 +76,9 @@ describe('Test UserStore', () => {
       username: 'otho.sackville-baggins@lordOfTheRings.com',
       password: 'password'
     });
+
     const roles: string[] = await userStore.getRoles(user);
+
     expect(roles).toEqual([]);
   });
 
@@ -80,7 +89,9 @@ describe('Test UserStore', () => {
       username: 'rosie.gamgee@lordOfTheRings.com',
       password: 'password'
     });
+
     await userStore.addRoles(user, ['USER', 'ADMIN']);
+
     const roles: string[] = await userStore.getRoles(user);
 
     expect(roles).toHaveSize(2);

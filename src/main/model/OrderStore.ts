@@ -86,4 +86,20 @@ export class OrderStore {
       throw new ApiError(`Cannot get products of order: ${err}`);
     }
   }
+
+  async removeOrder(id: string): Promise<Order> {
+    try {
+      const conn = await database.connect();
+      const sql_1 = 'DELETE FROM order_products op WHERE op.order_id = ($1)';
+      await conn.query(sql_1, [id]);
+
+      const sql_2 = 'DELETE FROM orders WHERE id = ($1) RETURNING *';
+      const result = await conn.query(sql_2, [id]);
+
+      conn.release();
+      return result.rows[0];
+    } catch (err) {
+      throw new ApiError(`Cannot remove order with id ${id}: ${err}`);
+    }
+  }
 }
