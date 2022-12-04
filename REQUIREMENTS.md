@@ -40,7 +40,7 @@ Postgres tables:
 
 products:
 
-(id: INTEGER, name: VARCHAR(50), price: DECIMAL(4,2), category: VARCHAR(50))
+(id: INTEGER, name: VARCHAR(50), price: DECIMAL(4,2), category: VARCHAR(100))
 
 #### User
 
