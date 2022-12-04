@@ -1,5 +1,7 @@
 ### Create User
-### --> after user has been created, add another row to roles, assigning John Smith the role ADMIN
+### --> In order to create an ADMIN user, you will first have to remove the verifyAuthToken and verifyRoles('ADMIN') middleware from the corresponding user-route.
+### Make sure to add this middleware to the route again, after the user has been created.
+### Once the user has been created, add an entry to the table 'roles', assigning the role 'ADMIN' to the user you have just created.
 POST http://localhost:3000/api/users/create
 Content-Type: application/json
 
@@ -12,6 +14,7 @@ Content-Type: application/json
 
 ### Create User
 ### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+### --> the required Bearer-token can be obtained by executing the next command (Authenticate User John Smith)
 POST http://localhost:3000/api/users/create
 Content-Type: application/json
 authorization: Bearer *John Smith's token*
@@ -185,7 +188,7 @@ authorization: Bearer *John Smith's token*
 
 ### Close Order of John Smith
 ### --> this action requires an authorization-Header containing the Bearer-token of the user, whose active order we want to close
-POST http://localhost:3000/api/orders/3/close
+POST http://localhost:3000/api/orders/1/close
 authorization: Bearer *John Smith's token*
 
 ### GET Completed Orders of John Smith
