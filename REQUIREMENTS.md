@@ -17,7 +17,8 @@ provide, as well as the data shapes the API returns for respective GET requests.
 
 - Index [token required, ROLE ADMIN]: [GET] users/index
 - Show [token required, ROLE ADMIN]: [GET] users/:id/show
-- Create [token required, ROLE ADMIN]: [POST] users/create
+- Create: [POST] users/create
+- add Role: [POST] users/:id/add-role
 
 #### Orders
 
@@ -55,6 +56,9 @@ Postgres tables:
 users:
 
 (id: INTEGER, firstname: VARCHAR(50), lastname: VARCHAR(50), username: VARCHAR(50), password: VARCHAR)
+
+roles:
+(id: INTEGER, role: VARCHAR(5), user_id: INTEGER [foreign_key to users table])
 
 #### Orders
 
