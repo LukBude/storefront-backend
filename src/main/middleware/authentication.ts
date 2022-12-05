@@ -8,8 +8,10 @@ export const verifyAuthToken = (req: express.Request, res: express.Response, nex
     const authorizationHeader = req.headers.authorization;
     const token = authorizationHeader!.split(' ')[1];
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as JwtPayload;
-    req.body.user = decoded.user;
-    req.body.roles = decoded.roles;
+    res.locals = {
+      'user': decoded.user,
+      'roles': decoded.roles
+    };
     next();
   } catch (err) {
     throw new UnauthorizedError(`User is unauthorized to access this route: ${err}`);

@@ -10,7 +10,7 @@ const orderStore = new OrderStore();
 
 orderRoute.get('/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const order: Order = await orderStore.getActiveOrder(req.body.user.id);
+    const order: Order = await orderStore.getActiveOrder(res.locals['user'].id);
     const response: OrderDto = {
       user_id: order.user_id,
       order_id: order.id!,
@@ -25,7 +25,7 @@ orderRoute.get('/active', verifyAuthToken, async (req: express.Request, res: exp
 
 orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const orders: Order[] = await orderStore.getCompletedOrders(req.body.user.id);
+    const orders: Order[] = await orderStore.getCompletedOrders(res.locals['user'].id);
     const response: OrderDto[] = [];
     for (const order of orders) {
       response.push({
@@ -44,7 +44,7 @@ orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: e
 orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const order: Order = {
-      'user_id': req.body.user.id,
+      'user_id': res.locals['user'].id,
       'status': 'active'
     };
     const newOrder: Order = await orderStore.addOrder(order);
