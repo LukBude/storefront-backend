@@ -20,7 +20,7 @@
   "test": {
     "driver": "pg",
     "port": {
-      "ENV": "POSTGRES_PORT"
+      "ENV": "POSTGRES_PORT_TEST"
     },
     "host": {
       "ENV": "POSTGRES_HOST"
