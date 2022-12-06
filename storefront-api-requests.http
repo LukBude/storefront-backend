@@ -10,12 +10,8 @@ Content-Type: application/json
 }
 
 ### Add Role 'ADMIN' to User John Smith
-POST http://localhost:3000/api/users/1/add-Role
-Content-Type: application/json
-
-{
-  "role": "ADMIN"
-}
+### --> you will have to do this manually, by executing the following SQL:
+### INSERT INTO roles(role, user_id) SELECT 'ADMIN', id FROM users WHERE users.username = 'john.smith@gmail.com'
 
 ### Create User Jane Smith
 POST http://localhost:3000/api/users/create

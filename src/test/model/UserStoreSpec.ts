@@ -23,7 +23,6 @@ describe('Test UserStore', () => {
       username: 'samwise.gamgee@lordOfTheRings.com',
       password: 'password'
     });
-
     const requestedUser: User = await userStore.getUser(user.id as unknown as string);
 
     expect(requestedUser.id).toBe(user.id);

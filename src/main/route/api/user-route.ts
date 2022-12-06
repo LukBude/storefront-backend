@@ -38,18 +38,18 @@ userRoute.post('/create', async (req: express.Request, res: express.Response, ne
     const newUser: User = await userStore.addUser(user);
     const newRoles: string[] = await userStore.addRoles(newUser, ['USER']);
     const token = jwt.sign({ user: newUser, roles: newRoles }, process.env.TOKEN_SECRET!);
-    res.status(HttpStatusCode.OK).send(token);
+    res.status(HttpStatusCode.OK).send({ token: token });
   } catch (err) {
     next(err);
   }
 });
 
-userRoute.post('/:id/add-Role', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+userRoute.post('/:id/add-role', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const user: User = await userStore.getUser(req.params.id);
     const newRoles: string[] = await userStore.addRoles(user, [req.body.role]);
-    const token = jwt.sign({ user: user, roles: newRoles }, process.env.TOKEN_SECRET!);
-    res.status(HttpStatusCode.OK).send(token);
+    jwt.sign({ user: user, roles: newRoles }, process.env.TOKEN_SECRET!);
+    res.sendStatus(HttpStatusCode.OK);
   } catch (err) {
     next(err);
   }
@@ -61,7 +61,7 @@ userRoute.post('/authenticate', async (req: express.Request, res: express.Respon
     if (authenticatedUser) {
       const authenticatedUserRoles: string[] = await userStore.getRoles(authenticatedUser);
       const token = jwt.sign({ user: authenticatedUser, roles: authenticatedUserRoles }, process.env.TOKEN_SECRET!);
-      res.status(HttpStatusCode.OK).send(token);
+      res.status(HttpStatusCode.OK).send({ token: token });
     } else {
       res.sendStatus(HttpStatusCode.BAD_REQUEST);
     }
