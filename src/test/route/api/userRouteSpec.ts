@@ -33,14 +33,19 @@ describe('Test user route', () => {
   });
 
   it('/api/users/index', async () => {
-    const amountOfUsers = (await userStore.getAllUsers()).length;
+    const fakeUser = {
+      firstname: 'fakeFirstname',
+      lastname: 'fakeLastname',
+      username: 'fakeUsername',
+      password: 'fakePassword'
+    };
+    spyOn(userStore, 'getAllUsers').and.returnValue(Promise.resolve([fakeUser]));
 
     const response = await request
       .get('/api/users/index')
       .set('authorization', `Bearer ${adminToken}`);
 
-    expect(response.body).toContain(admin);
-    expect(response.body.length).toBe(amountOfUsers);
+    expect(response.body).toContain(fakeUser);
   });
 
 
