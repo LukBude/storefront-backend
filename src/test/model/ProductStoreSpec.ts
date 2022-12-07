@@ -1,8 +1,7 @@
-import { ProductStore } from '../../main/model/ProductStore';
 import { Product } from '../../main/model/product';
+import productStore from '../../main/model/ProductStore';
 
 describe('Test ProductStore', () => {
-  const productStore = new ProductStore();
 
   it('addProduct should add a product', async () => {
     const addedProduct = await productStore.addProduct({

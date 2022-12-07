@@ -1,12 +1,11 @@
 import express from 'express';
-import { OrderStore } from '../../model/OrderStore';
 import { Order } from '../../model/order';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import { verifyAuthToken } from '../../middleware/authentication';
 import { OrderDto } from '../../model/order-dto';
+import orderStore from '../../model/OrderStore';
 
 const orderRoute = express.Router();
-const orderStore = new OrderStore();
 
 orderRoute.get('/active', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

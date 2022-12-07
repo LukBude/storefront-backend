@@ -1,12 +1,11 @@
 import express from 'express';
-import { ProductStore } from '../../model/ProductStore';
 import { Product } from '../../model/product';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import { verifyAuthToken } from '../../middleware/authentication';
 import { verifyRoles } from '../../middleware/authorization';
+import productStore from '../../model/ProductStore';
 
 const productRoute = express.Router();
-const productStore = new ProductStore();
 
 productRoute.get('/index', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

@@ -2,7 +2,7 @@ import { Order } from './order';
 import database from '../database';
 import { ApiError } from '../error/ApiError';
 
-export class OrderStore {
+class OrderStore {
   async getOrder(orderId: string): Promise<Order> {
     try {
       const conn = await database.connect();
@@ -103,3 +103,5 @@ export class OrderStore {
     }
   }
 }
+
+export default new OrderStore();

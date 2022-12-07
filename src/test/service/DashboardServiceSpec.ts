@@ -1,17 +1,12 @@
-import { DashboardService } from '../../main/service/DashboardService';
 import { User } from '../../main/model/user';
-import { UserStore } from '../../main/model/UserStore';
-import { ProductStore } from '../../main/model/ProductStore';
+import userStore from '../../main/model/UserStore';
 import { Product } from '../../main/model/product';
-import { OrderStore } from '../../main/model/OrderStore';
 import { Order } from '../../main/model/order';
+import productStore from '../../main/model/ProductStore';
+import orderStore from '../../main/model/OrderStore';
+import dashboardService from '../../main/service/DashboardService';
 
 describe('Test DashboardService', () => {
-  const dashboardService: DashboardService = new DashboardService();
-  const userStore: UserStore = new UserStore();
-  const productStore: ProductStore = new ProductStore();
-  const orderStore: OrderStore = new OrderStore();
-
   let user_1: User;
   let user_2: User;
   let order_1: Order;

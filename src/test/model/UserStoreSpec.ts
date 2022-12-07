@@ -1,8 +1,7 @@
-import { UserStore } from '../../main/model/UserStore';
+import userStore from '../../main/model/UserStore';
 import { User } from '../../main/model/user';
 
 describe('Test UserStore', () => {
-  const userStore = new UserStore();
 
   it('addUser should add a user', async () => {
     const addedUser = await userStore.addUser({

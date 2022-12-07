@@ -1,15 +1,14 @@
 import supertest from 'supertest';
 import server from '../../../main/server';
-import { ProductStore } from '../../../main/model/ProductStore';
-import { OrderStore } from '../../../main/model/OrderStore';
 import { User } from '../../../main/model/user';
-import { UserStore } from '../../../main/model/UserStore';
+import userStore from '../../../main/model/UserStore';
 import { Order } from '../../../main/model/order';
 import { Product } from '../../../main/model/product';
+import productStore from '../../../main/model/ProductStore';
+import orderStore from '../../../main/model/OrderStore';
 
 describe('Test dashboard route', () => {
   const request = supertest(server);
-  const orderStore = new OrderStore();
   let order: Order;
   let product_1: Product;
   let product_2: Product;
@@ -17,8 +16,6 @@ describe('Test dashboard route', () => {
 
   let product_4: Product;
   beforeAll(async () => {
-    const userStore = new UserStore();
-    const productStore = new ProductStore();
 
     const user: User = await userStore.addUser({
       firstname: 'Abraham Jebediah',

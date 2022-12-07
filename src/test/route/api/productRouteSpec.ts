@@ -1,14 +1,12 @@
 import supertest from 'supertest';
 import server from '../../../main/server';
 import { User } from '../../../main/model/user';
-import { UserStore } from '../../../main/model/UserStore';
+import userStore from '../../../main/model/UserStore';
 import { Product } from '../../../main/model/product';
-import { ProductStore } from '../../../main/model/ProductStore';
+import productStore from '../../../main/model/ProductStore';
 
 describe('Test product route', () => {
   const request = supertest(server);
-  const userStore = new UserStore();
-  const productStore = new ProductStore();
   let admin: User;
   let adminToken: string;
 

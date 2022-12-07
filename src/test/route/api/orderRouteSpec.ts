@@ -1,16 +1,15 @@
 import supertest from 'supertest';
 import server from '../../../main/server';
 import { Product } from '../../../main/model/product';
-import { ProductStore } from '../../../main/model/ProductStore';
+import productStore from '../../../main/model/ProductStore';
 import { User } from '../../../main/model/user';
 import jwt from 'jsonwebtoken';
-import { OrderStore } from '../../../main/model/OrderStore';
 import { Order } from '../../../main/model/order';
 import { JwtPayload } from '../../../main/middleware/jwt-payload';
+import orderStore from '../../../main/model/OrderStore';
 
 describe('Test order route', () => {
   const request = supertest(server);
-  const orderStore = new OrderStore();
   let user: User;
   let userToken: string;
 
@@ -93,7 +92,7 @@ describe('Test order route', () => {
   });
 
   it('/api/orders/:id/products', async () => {
-    const product: Product = await new ProductStore().addProduct({
+    const product: Product = await productStore.addProduct({
       name: 'The Logician and The Engineer',
       price: 22.07,
       category: 'History of Math'

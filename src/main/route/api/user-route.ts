@@ -1,5 +1,5 @@
 import express from 'express';
-import { UserStore } from '../../model/UserStore';
+import userStore from '../../model/UserStore';
 import { User } from '../../model/user';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
 import jwt from 'jsonwebtoken';
@@ -7,7 +7,6 @@ import { verifyAuthToken } from '../../middleware/authentication';
 import { verifyRoles } from '../../middleware/authorization';
 
 const userRoute = express.Router();
-const userStore = new UserStore();
 
 userRoute.get('/index', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

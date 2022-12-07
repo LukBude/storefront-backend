@@ -1,14 +1,11 @@
-import { OrderStore } from '../../main/model/OrderStore';
 import { Order } from '../../main/model/order';
 import { Product } from '../../main/model/product';
-import { ProductStore } from '../../main/model/ProductStore';
-import { UserStore } from '../../main/model/UserStore';
+import userStore from '../../main/model/UserStore';
 import { User } from '../../main/model/user';
+import productStore from '../../main/model/ProductStore';
+import orderStore from '../../main/model/OrderStore';
 
 describe('Test OrderStore', () => {
-  const orderStore = new OrderStore();
-  const productStore = new ProductStore();
-  const userStore = new UserStore();
   let user: User;
 
   beforeAll(async () => {

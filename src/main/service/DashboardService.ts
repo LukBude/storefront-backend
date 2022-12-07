@@ -1,7 +1,7 @@
 import { Product } from '../model/product';
 import database from '../database';
 
-export class DashboardService {
+class DashboardService {
   async getMostPopularProducts(): Promise<Product[]> {
     try {
       const conn = await database.connect();
@@ -32,3 +32,5 @@ export class DashboardService {
     }
   }
 }
+
+export default new DashboardService();

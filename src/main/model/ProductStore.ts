@@ -2,7 +2,7 @@ import { Product } from './product';
 import database from '../database';
 import { ApiError } from '../error/ApiError';
 
-export class ProductStore {
+class ProductStore {
   async getAllProducts(): Promise<Product[]> {
     try {
       const conn = await database.connect();
@@ -39,3 +39,5 @@ export class ProductStore {
     }
   }
 }
+
+export default new ProductStore();

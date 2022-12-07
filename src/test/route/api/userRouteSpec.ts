@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import server from '../../../main/server';
 import { User } from '../../../main/model/user';
-import { UserStore } from '../../../main/model/UserStore';
+import userStore from '../../../main/model/UserStore';
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from '../../../main/middleware/jwt-payload';
 import bcrypt from 'bcrypt';
@@ -9,7 +9,6 @@ import { HttpStatusCode } from '../../../main/error/HttpStatusCode';
 
 describe('Test user route', () => {
   const request = supertest(server);
-  const userStore = new UserStore();
   let admin: User;
   let adminToken: string;
 
@@ -33,19 +32,14 @@ describe('Test user route', () => {
   });
 
   it('/api/users/index', async () => {
-    const fakeUser = {
-      firstname: 'fakeFirstname',
-      lastname: 'fakeLastname',
-      username: 'fakeUsername',
-      password: 'fakePassword'
-    };
-    spyOn(userStore, 'getAllUsers').and.returnValue(Promise.resolve([fakeUser]));
+    const amountOfUsers = (await userStore.getAllUsers()).length;
 
     const response = await request
       .get('/api/users/index')
       .set('authorization', `Bearer ${adminToken}`);
 
-    expect(response.body).toContain(fakeUser);
+    expect(response.body).toContain(admin);
+    expect(response.body.length).toBe(amountOfUsers);
   });
 
 

@@ -1,10 +1,9 @@
 import express from 'express';
-import { DashboardService } from '../../service/DashboardService';
 import { Product } from '../../model/product';
 import { HttpStatusCode } from '../../error/HttpStatusCode';
+import dashboardService from '../../service/DashboardService';
 
 const dashboardRoute = express.Router();
-const dashboardService = new DashboardService();
 
 dashboardRoute.get('/products/popular', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

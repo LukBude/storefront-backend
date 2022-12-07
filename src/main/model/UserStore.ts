@@ -3,7 +3,7 @@ import database from '../database';
 import bcrypt from 'bcrypt';
 import { ApiError } from '../error/ApiError';
 
-export class UserStore {
+class UserStore {
   private pepper = process.env.BCRYPT_PASSWORD;
   private saltRounds = process.env.SALT_ROUNDS;
 
@@ -98,3 +98,5 @@ export class UserStore {
   }
 
 }
+
+export default new UserStore();
