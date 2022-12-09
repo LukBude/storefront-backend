@@ -23,7 +23,7 @@ describe('Test OrderStore', () => {
       status: 'complete'
     });
 
-    const orders: Order[] = await orderStore.getCompletedOrders(user.id as unknown as string);
+    const orders: Order[] = await orderStore.getCompletedOrders(user.id!);
 
     expect(orders).toContain(completedOrder);
   });
@@ -34,7 +34,7 @@ describe('Test OrderStore', () => {
       status: 'complete'
     });
 
-    const order: Order = await orderStore.getOrder(completedOrder.id as unknown as string);
+    const order: Order = await orderStore.getOrder(completedOrder.id!);
 
     expect(order).toEqual(completedOrder);
   });
@@ -45,16 +45,16 @@ describe('Test OrderStore', () => {
       status: 'active'
     });
 
-    const requestedOrder: Order = await orderStore.getActiveOrder(user.id as unknown as string);
+    const requestedOrder: Order = await orderStore.getActiveOrder(user.id!);
 
     expect(requestedOrder.id).toBe(activeOrder.id);
     expect(requestedOrder).toEqual(activeOrder);
 
-    await orderStore.closeOrder(activeOrder.id as unknown as string);
+    await orderStore.closeOrder(activeOrder.id!);
   });
 
   it('getCompletedOrders should return a list of completed orders', async () => {
-    const initialAmountOfOrdersInStore: number = (await orderStore.getCompletedOrders(user.id as unknown as string)).length;
+    const initialAmountOfOrdersInStore: number = (await orderStore.getCompletedOrders(user.id!)).length;
     const completedOrder: Order = await orderStore.addOrder({
       user_id: user.id!,
       status: 'complete'
@@ -64,14 +64,14 @@ describe('Test OrderStore', () => {
       status: 'active'
     });
 
-    const orders: Order[] = await orderStore.getCompletedOrders(user.id as unknown as string);
+    const orders: Order[] = await orderStore.getCompletedOrders(user.id!);
     const finalAmountOfOrdersInStore: number = orders.length;
 
     expect(orders).toContain(completedOrder);
     expect(orders).not.toContain(activeOrder);
     expect(finalAmountOfOrdersInStore).toBe(initialAmountOfOrdersInStore + 1);
 
-    await orderStore.closeOrder(activeOrder.id as unknown as string);
+    await orderStore.closeOrder(activeOrder.id!);
   });
 
   it('addProduct should add a product to an order', async () => {
@@ -86,14 +86,14 @@ describe('Test OrderStore', () => {
     });
 
     const productOfOrder: { product_id: number, quantity: number } = await orderStore.addProduct(
-      activeOrder.id as unknown as string,
-      product.id as unknown as string,
-      '2');
+      activeOrder.id!,
+      product.id!,
+      2);
 
     expect(productOfOrder.product_id).toEqual(product.id!);
     expect(productOfOrder.quantity).toEqual(2);
 
-    await orderStore.removeOrder(activeOrder.id as unknown as string);
+    await orderStore.removeOrder(activeOrder.id!);
   });
 
   it('getProductsOfOrder should return products of order', async () => {
@@ -112,15 +112,15 @@ describe('Test OrderStore', () => {
       category: 'Fantasy'
     });
     await orderStore.addProduct(
-      activeOrder.id as unknown as string,
-      product_1.id as unknown as string,
-      '10');
+      activeOrder.id!,
+      product_1.id!,
+      10);
     await orderStore.addProduct(
-      activeOrder.id as unknown as string,
-      product_2.id as unknown as string,
-      '5');
+      activeOrder.id!,
+      product_2.id!,
+      5);
 
-    const productsOfOrder = await orderStore.getProductsOfOrder(activeOrder.id as unknown as string);
+    const productsOfOrder = await orderStore.getProductsOfOrder(activeOrder.id!);
 
     expect(productsOfOrder).toContain({
       product_id: product_1.id!,
@@ -131,7 +131,7 @@ describe('Test OrderStore', () => {
       quantity: 5
     });
 
-    await orderStore.removeOrder(activeOrder.id as unknown as string);
+    await orderStore.removeOrder(activeOrder.id!);
   });
 
   it('closeOrder should change the status of an active order to complete', async () => {
@@ -140,7 +140,7 @@ describe('Test OrderStore', () => {
       status: 'active'
     });
 
-    const closedOrder = await orderStore.closeOrder(activeOrder.id as unknown as string);
+    const closedOrder = await orderStore.closeOrder(activeOrder.id!);
 
     expect(closedOrder.id).toBe(activeOrder.id);
     expect(closedOrder.status).toEqual('complete');

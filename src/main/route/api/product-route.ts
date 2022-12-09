@@ -18,7 +18,7 @@ productRoute.get('/index', async (req: express.Request, res: express.Response, n
 
 productRoute.get('/:id/show', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const product: Product = await productStore.getProduct(req.params.id);
+    const product: Product = await productStore.getProduct(+req.params.id);
     res.status(HttpStatusCode.OK).send(product);
   } catch (err) {
     next(err);

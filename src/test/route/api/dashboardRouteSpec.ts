@@ -1,82 +1,67 @@
 import supertest from 'supertest';
 import server from '../../../main/server';
-import { User } from '../../../main/model/user';
-import userStore from '../../../main/model/UserStore';
-import { Order } from '../../../main/model/order';
 import { Product } from '../../../main/model/product';
-import productStore from '../../../main/model/ProductStore';
-import orderStore from '../../../main/model/OrderStore';
+import dashboardService from '../../../main/service/DashboardService';
 
 describe('Test dashboard route', () => {
   const request = supertest(server);
-  let order: Order;
-  let product_1: Product;
-  let product_2: Product;
-  let product_3: Product;
+  let popularProducts: Product[];
+  let productsByCategory: Product[];
 
-  let product_4: Product;
   beforeAll(async () => {
-
-    const user: User = await userStore.addUser({
-      firstname: 'Abraham Jebediah',
-      lastname: 'Simpson',
-      username: 'abraham-jebediah.simpson@gmail.com',
-      password: 'password'
-    });
-
-    product_1 = await productStore.addProduct({
-      name: 'Harry Potter and the Philosopher\'s Stone',
-      price: 33.89,
-      category: 'Fantasy'
-    });
-    product_2 = await productStore.addProduct({
-      name: 'Harry Potter and the Chamber of Secrets',
-      price: 25.28,
-      category: 'Fantasy'
-    });
-    product_3 = await productStore.addProduct({
-      name: 'Rivers of London',
-      price: 21.35,
-      category: 'Crime'
-    });
-    product_4 = await productStore.addProduct({
-      name: 'The Swarm',
-      price: 24.77,
-      category: 'Thriller'
-    });
-
-    order = await orderStore.addOrder({
-      user_id: user.id!,
-      status: 'active'
-    });
-
-    await orderStore.addProduct(order.id as unknown as string, product_1.id as unknown as string, '20');
-    await orderStore.addProduct(order.id as unknown as string, product_2.id as unknown as string, '15');
-    await orderStore.addProduct(order.id as unknown as string, product_3.id as unknown as string, '10');
-    await orderStore.addProduct(order.id as unknown as string, product_4.id as unknown as string, '5');
-  });
-
-  afterAll(() => {
-    orderStore.removeOrder(order.id as unknown as string);
+    popularProducts = [
+      {
+        id: 1,
+        name: 'Harry Potter and the Philosopher\'s Stone',
+        price: 33.89,
+        category: 'Fantasy'
+      },
+      {
+        id: 3,
+        name: 'Rivers of London',
+        price: 21.35,
+        category: 'Crime'
+      },
+      {
+        id: 4,
+        name: 'The Swarm',
+        price: 24.77,
+        category: 'Thriller'
+      }];
+    productsByCategory = [
+      {
+        id: 1,
+        name: 'Harry Potter and the Philosopher\'s Stone',
+        price: 33.89,
+        category: 'Fantasy'
+      },
+      {
+        id: 2,
+        name: 'Harry Potter and the Chamber of Secrets',
+        price: 25.28,
+        category: 'Fantasy'
+      }
+    ];
   });
 
   it('/api/dashboard/products/popular', async () => {
+    const getMostPopularProductsSpy = spyOn(dashboardService, 'getMostPopularProducts').and.returnValue(popularProducts);
+
     const response = await request
       .get('/api/dashboard/products/popular');
 
-    expect(response.body).toContain(product_1);
-    expect(response.body).toContain(product_2);
-    expect(response.body).toContain(product_3);
-    expect(response.body).not.toContain(product_4);
+    expect(getMostPopularProductsSpy).toHaveBeenCalled();
+    expect(response.body).toEqual(popularProducts);
   });
 
   it('/api/dashboard/products?category={category}', async () => {
-    const response = await request
-      .get('/api/dashboard/products?category=Fantasy');
+    const category = 'Fantasy';
+    const getProductsByCategorySpy = spyOn(dashboardService, 'getProductsByCategory').and.returnValue(productsByCategory);
 
-    expect(response.body).toContain(product_1);
-    expect(response.body).toContain(product_2);
-    expect(response.body).not.toContain(product_3);
-    expect(response.body).not.toContain(product_4);
+    const response = await request
+      .get('/api/dashboard/products?category=' + category);
+
+    expect(getProductsByCategorySpy).toHaveBeenCalledWith(category);
+    expect(response.body).toEqual(productsByCategory);
   });
 });

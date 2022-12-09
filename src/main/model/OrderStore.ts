@@ -3,7 +3,7 @@ import database from '../database';
 import { ApiError } from '../error/ApiError';
 
 class OrderStore {
-  async getOrder(orderId: string): Promise<Order> {
+  async getOrder(orderId: number): Promise<Order> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM orders WHERE orders.id = ($1)';
@@ -15,7 +15,7 @@ class OrderStore {
     }
   }
 
-  async getActiveOrder(userId: string): Promise<Order> {
+  async getActiveOrder(userId: number): Promise<Order> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = ($1) AND status = ($2)';
@@ -27,7 +27,7 @@ class OrderStore {
     }
   }
 
-  async getCompletedOrders(userId: string): Promise<Order[]> {
+  async getCompletedOrders(userId: number): Promise<Order[]> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = ($1) AND status = ($2)';
@@ -51,7 +51,7 @@ class OrderStore {
     }
   }
 
-  async addProduct(orderId: string, productId: string, quantity: string): Promise<{ product_id: number, quantity: number }> {
+  async addProduct(orderId: number, productId: number, quantity: number): Promise<{ product_id: number, quantity: number }> {
     try {
       const conn = await database.connect();
       const sql = 'INSERT INTO order_products(order_id, product_id, quantity) VALUES($1, $2, $3) RETURNING product_id, quantity';
@@ -63,7 +63,7 @@ class OrderStore {
     }
   }
 
-  async closeOrder(orderId: string): Promise<Order> {
+  async closeOrder(orderId: number): Promise<Order> {
     try {
       const conn = await database.connect();
       const sql = 'UPDATE orders SET status = ($2) WHERE id = ($1) RETURNING *';
@@ -75,7 +75,7 @@ class OrderStore {
     }
   }
 
-  async getProductsOfOrder(orderId: string): Promise<{ product_id: number, quantity: number }[]> {
+  async getProductsOfOrder(orderId: number): Promise<{ product_id: number, quantity: number }[]> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT product_id, quantity FROM order_products op WHERE op.order_id = ($1)';
@@ -87,7 +87,7 @@ class OrderStore {
     }
   }
 
-  async removeOrder(id: string): Promise<Order> {
+  async removeOrder(id: number): Promise<Order> {
     try {
       const conn = await database.connect();
       const sql_1 = 'DELETE FROM order_products op WHERE op.order_id = ($1)';

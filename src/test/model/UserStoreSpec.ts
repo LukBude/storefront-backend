@@ -1,5 +1,6 @@
 import userStore from '../../main/model/UserStore';
 import { User } from '../../main/model/user';
+import bcrypt from 'bcrypt';
 
 describe('Test UserStore', () => {
 
@@ -15,6 +16,19 @@ describe('Test UserStore', () => {
     expect(users).toContain(addedUser);
   });
 
+  it('addUser should encrypt password', async () => {
+    const addedUser = await userStore.addUser({
+      firstname: 'Elanor',
+      lastname: 'Gamgee',
+      username: 'elanor.gamgee@lordOfTheRings.com',
+      password: 'secret'
+    });
+    const requestedUser: User = await userStore.getUser(addedUser.id!);
+
+    expect(requestedUser.password).not.toEqual('secret');
+    expect(comparePasswords('secret', requestedUser.password)).toBe(true);
+  });
+
   it('getUser should return requested user', async () => {
     const user = await userStore.addUser({
       firstname: 'Samwise',
@@ -22,7 +36,7 @@ describe('Test UserStore', () => {
       username: 'samwise.gamgee@lordOfTheRings.com',
       password: 'password'
     });
-    const requestedUser: User = await userStore.getUser(user.id as unknown as string);
+    const requestedUser: User = await userStore.getUser(user.id!);
 
     expect(requestedUser.id).toBe(user.id);
   });
@@ -96,4 +110,8 @@ describe('Test UserStore', () => {
     expect(roles).toContain('USER');
     expect(roles).toContain('ADMIN');
   });
+
+  const comparePasswords = (expectedClearTextPassword: string, providedEncryptedPassword: string): boolean => {
+    return bcrypt.compareSync(expectedClearTextPassword + process.env.BCRYPT_PASSWORD, providedEncryptedPassword);
+  };
 });

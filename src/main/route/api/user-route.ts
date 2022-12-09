@@ -19,7 +19,7 @@ userRoute.get('/index', verifyAuthToken, verifyRoles('ADMIN'), async (req: expre
 
 userRoute.get('/:id/show', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const user: User = await userStore.getUser(req.params.id);
+    const user: User = await userStore.getUser(+req.params.id);
     res.status(HttpStatusCode.OK).send(user);
   } catch (err) {
     next(err);
@@ -45,7 +45,7 @@ userRoute.post('/create', async (req: express.Request, res: express.Response, ne
 
 userRoute.post('/:id/add-role', verifyAuthToken, verifyRoles('ADMIN'), async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    const user: User = await userStore.getUser(req.params.id);
+    const user: User = await userStore.getUser(+req.params.id);
     const newRoles: string[] = await userStore.addRoles(user, [req.body.role]);
     jwt.sign({ user: user, roles: newRoles }, process.env.TOKEN_SECRET!);
     res.sendStatus(HttpStatusCode.OK);

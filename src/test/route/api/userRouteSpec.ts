@@ -4,7 +4,6 @@ import { User } from '../../../main/model/user';
 import userStore from '../../../main/model/UserStore';
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from '../../../main/middleware/jwt-payload';
-import bcrypt from 'bcrypt';
 import { HttpStatusCode } from '../../../main/error/HttpStatusCode';
 
 describe('Test user route', () => {
@@ -13,97 +12,102 @@ describe('Test user route', () => {
   let adminToken: string;
 
   beforeAll(async () => {
-    admin = await userStore.addUser({
+    admin = {
+      id: 1,
       firstname: 'Homer',
       lastname: 'Simpson',
       username: 'homer.simpson@gmail.com',
       password: 'password'
-    });
-    await userStore.addRoles(admin, ['USER', 'ADMIN']);
+    };
+    spyOn(userStore, 'authenticateUser').and.returnValue(admin);
+    spyOn(userStore, 'getRoles').and.returnValue(['USER', 'ADMIN']);
 
     const response = await request
       .post('/api/users/authenticate')
       .send({
-        username: 'homer.simpson@gmail.com',
-        password: 'password'
+        username: admin.username,
+        password: admin.password
       });
 
     adminToken = response.body.token;
   });
 
   it('/api/users/index', async () => {
-    const amountOfUsers = (await userStore.getAllUsers()).length;
+    spyOn(userStore, 'getAllUsers').and.returnValue([admin]);
 
     const response = await request
       .get('/api/users/index')
       .set('authorization', `Bearer ${adminToken}`);
 
-    expect(response.body).toContain(admin);
-    expect(response.body.length).toBe(amountOfUsers);
+    expect(response.body).toEqual([admin]);
   });
 
 
   it('/api/users/:id/show', async () => {
+    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(admin);
+
     const response = await request
       .get(`/api/users/${admin.id}/show`)
       .set('authorization', `Bearer ${adminToken}`);
 
+    expect(getUserSpy).toHaveBeenCalledWith(admin.id);
     expect(response.body).toEqual(admin);
   });
 
   it('/api/users/create', async () => {
-    const initialAmountOfUsers = (await userStore.getAllUsers()).length;
-    const requestBody: User = {
+    const user: User = {
+      id: 2,
       firstname: 'Bart',
       lastname: 'Simpson',
       username: 'bart.simpson@gmail.com',
       password: 'secret'
     };
+    const requestBody: User = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      username: user.username,
+      password: user.password
+    };
+    const addUserSpy = spyOn(userStore, 'addUser').and.returnValue(user);
+    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue(['USER']);
 
     const response = await request
       .post('/api/users/create')
       .send(requestBody);
 
-    const decodedResponseToken = jwt.verify(response.body.token, process.env.TOKEN_SECRET!) as JwtPayload;
-    const finalAmountOfUsers = (await userStore.getAllUsers()).length;
-
-    expect(decodedResponseToken.user.firstname).toEqual(requestBody.firstname);
-    expect(decodedResponseToken.user.lastname).toEqual(requestBody.lastname);
-    expect(decodedResponseToken.user.username).toEqual(requestBody.username);
-    expect(comparePasswords(decodedResponseToken.user.password, requestBody.password)).toBe(true);
-    expect(decodedResponseToken.roles).toContain('USER');
-    expect(decodedResponseToken.roles).not.toContain('ADMIN');
-    expect(finalAmountOfUsers).toBe(initialAmountOfUsers + 1);
+    expect(addUserSpy).toHaveBeenCalledWith(requestBody);
+    expect(addRolesSpy).toHaveBeenCalledWith(user, ['USER']);
+    assertDecodedToken(decodeResponseToken(response.body.token), requestBody, ['USER']);
   });
 
   it('/api/users/:id/add-role', async () => {
-    const user: User = await userStore.addUser({
+    const user: User = {
+      id: 3,
       firstname: 'Selma',
       lastname: 'Bouvier',
       username: 'selma.bouvier@gmail.com',
       password: 'password'
-    });
-    const initialRoles: string[] = await userStore.getRoles(user);
+    };
     const requestBody = {
       role: 'ADMIN'
     };
+    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(user);
+    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue([requestBody.role]);
 
     const response = await request
       .post(`/api/users/${user.id}/add-role`)
       .send(requestBody)
       .set('authorization', `Bearer ${adminToken}`);
 
-    const finalRoles: string[] = await userStore.getRoles(user);
-
     expect(response.status).toBe(HttpStatusCode.OK);
-    expect(initialRoles).not.toContain('ADMIN');
-    expect(finalRoles).toContain('ADMIN');
+    expect(getUserSpy).toHaveBeenCalledWith(user.id);
+    expect(addRolesSpy).toHaveBeenCalledWith(user, [requestBody.role]);
   });
 
   it('/api/users/authenticate', async () => {
     const requestBody = {
       username: admin.username,
-      password: 'password'
+      password: admin.password
     };
 
     const response = await request
@@ -111,17 +115,18 @@ describe('Test user route', () => {
       .send(requestBody)
       .set('authorization', `Bearer ${adminToken}`);
 
-    const decodedResponseToken = jwt.verify(response.body.token, process.env.TOKEN_SECRET!) as JwtPayload;
-
-    expect(decodedResponseToken.user.firstname).toEqual(admin.firstname);
-    expect(decodedResponseToken.user.lastname).toEqual(admin.lastname);
-    expect(decodedResponseToken.user.username).toEqual(admin.username);
-    expect(comparePasswords(decodedResponseToken.user.password, requestBody.password)).toBe(true);
-    expect(decodedResponseToken.roles).toContain('USER');
-    expect(decodedResponseToken.roles).toContain('ADMIN');
+    assertDecodedToken(decodeResponseToken(response.body.token), admin, ['USER', 'ADMIN']);
   });
 
-  const comparePasswords = (providedEncryptedPassword: string, expectedClearTextPassword: string): boolean => {
-    return bcrypt.compareSync(expectedClearTextPassword + process.env.BCRYPT_PASSWORD, providedEncryptedPassword);
+  const decodeResponseToken = (token: string): JwtPayload => {
+    return jwt.verify(token, process.env.TOKEN_SECRET!) as JwtPayload;
+  };
+
+  const assertDecodedToken = (decodedToken: JwtPayload, user: User, roles: string[]): void => {
+    expect(decodedToken.user.firstname).toEqual(user.firstname);
+    expect(decodedToken.user.lastname).toEqual(user.lastname);
+    expect(decodedToken.user.username).toEqual(user.username);
+    expect(decodedToken.user.password).toEqual(user.password);
+    expect(decodedToken.roles).toEqual(roles);
   };
 });

@@ -1,4 +1,4 @@
-export type OrderDto = {
+export type OrderDTO = {
   user_id: number
   order_id: number,
   status: string,

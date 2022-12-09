@@ -15,7 +15,7 @@ class ProductStore {
     }
   }
 
-  async getProduct(id: string): Promise<Product> {
+  async getProduct(id: number): Promise<Product> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM products WHERE id = ($1)';

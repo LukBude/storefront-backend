@@ -19,7 +19,7 @@ class UserStore {
     }
   }
 
-  async getUser(userId: string): Promise<User> {
+  async getUser(userId: number): Promise<User> {
     try {
       const conn = await database.connect();
       const sql = 'SELECT * FROM users WHERE id = ($1)';

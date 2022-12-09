@@ -72,21 +72,21 @@ describe('Test DashboardService', () => {
       category: 'Anthropology'
     });
 
-    await orderStore.addProduct(order_1.id as unknown as string, product_1.id as unknown as string, '50');
-    await orderStore.addProduct(order_1.id as unknown as string, product_2.id as unknown as string, '40');
-    await orderStore.addProduct(order_1.id as unknown as string, product_3.id as unknown as string, '30');
-    await orderStore.addProduct(order_1.id as unknown as string, product_4.id as unknown as string, '20');
-    await orderStore.addProduct(order_1.id as unknown as string, product_5.id as unknown as string, '10');
-    await orderStore.addProduct(order_2.id as unknown as string, product_1.id as unknown as string, '50');
-    await orderStore.addProduct(order_2.id as unknown as string, product_2.id as unknown as string, '40');
-    await orderStore.addProduct(order_2.id as unknown as string, product_3.id as unknown as string, '30');
-    await orderStore.addProduct(order_2.id as unknown as string, product_4.id as unknown as string, '20');
-    await orderStore.addProduct(order_2.id as unknown as string, product_5.id as unknown as string, '10');
+    await orderStore.addProduct(order_1.id!, product_1.id!, 50);
+    await orderStore.addProduct(order_1.id!, product_2.id!, 40);
+    await orderStore.addProduct(order_1.id!, product_3.id!, 30);
+    await orderStore.addProduct(order_1.id!, product_4.id!, 20);
+    await orderStore.addProduct(order_1.id!, product_5.id!, 10);
+    await orderStore.addProduct(order_2.id!, product_1.id!, 50);
+    await orderStore.addProduct(order_2.id!, product_2.id!, 40);
+    await orderStore.addProduct(order_2.id!, product_3.id!, 30);
+    await orderStore.addProduct(order_2.id!, product_4.id!, 20);
+    await orderStore.addProduct(order_2.id!, product_5.id!, 10);
   });
 
   afterAll(() => {
-    orderStore.removeOrder(order_1.id as unknown as string);
-    orderStore.removeOrder(order_2.id as unknown as string);
+    orderStore.removeOrder(order_1.id!);
+    orderStore.removeOrder(order_2.id!);
   });
 
   it('getMostPopularProducts should return the 3 most popular products', async () => {

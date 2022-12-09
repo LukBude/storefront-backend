@@ -22,7 +22,7 @@ describe('Test ProductStore', () => {
       category: 'Fantasy'
     });
 
-    const requestedProduct: Product = await productStore.getProduct(product.id as unknown as string);
+    const requestedProduct: Product = await productStore.getProduct(product.id!);
 
     expect(requestedProduct.id).toBe(product.id);
   });
