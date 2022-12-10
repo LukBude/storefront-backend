@@ -47,7 +47,6 @@ describe('Test OrderStore', () => {
 
     const requestedOrder: Order = await orderStore.getActiveOrder(user.id!);
 
-    expect(requestedOrder.id).toBe(activeOrder.id);
     expect(requestedOrder).toEqual(activeOrder);
 
     await orderStore.closeOrder(activeOrder.id!);

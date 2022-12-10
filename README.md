@@ -11,11 +11,11 @@ set up the database, which provides the actual data. To do so, you need to have 
 1. Clone this repository, navigate into it and open a console.
 2. In the next step, navigate into the docker folder and run the command
    "docker-compose up". \
-   &#8594; This command will create two docker containers, which run a PostgreSQL database each. Open the
-   docker-compose.yml for more information about the databases, such as the respective database name and the username and password
-   combination required to connect to it, as well as the ports the docker containers are exposing.
-   Notice that only one of the databases holds the data, which the storefront API works with. The other database exists for test
-   purposes only.
+   &#8594; This command will create two docker containers, which run a PostgreSQL database each. One of the docker containers runs
+   a database, which holds the data the storefront API works with, and is exposing port 32775. The other docker container runs a
+   database for test purposes only and is exposing port 32776. Open the docker-compose.yml for more information about the
+   databases,
+   such as the respective database name and the username and password combination required to connect to it.
 3. You will now have to create a .env file inside the root folder of the storefront-backend repository. This file contains
    important
    information about both the database and encryption. Make sure to include the following entries inside the .env file: \

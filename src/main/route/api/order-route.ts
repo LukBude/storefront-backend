@@ -4,6 +4,7 @@ import { HttpStatusCode } from '../../error/HttpStatusCode';
 import { verifyAuthToken } from '../../middleware/authentication';
 import { OrderDTO } from '../../model/order-dto';
 import orderStore from '../../model/OrderStore';
+import { ApiError } from '../../error/ApiError';
 
 const orderRoute = express.Router();
 
@@ -42,6 +43,11 @@ orderRoute.get('/complete', verifyAuthToken, async (req: express.Request, res: e
 
 orderRoute.post('/create', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
+    const existingActiveOrder: Order = await orderStore.getActiveOrder(res.locals['user'].id);
+    if (existingActiveOrder) {
+      throw new ApiError('An active order already exists');
+    }
+
     const order: Order = {
       'user_id': res.locals['user'].id,
       'status': 'active'
@@ -64,11 +70,14 @@ orderRoute.post('/:id/close', verifyAuthToken, async (req: express.Request, res:
 
 orderRoute.post('/:id/products', verifyAuthToken, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
+    const order: Order = await orderStore.getOrder(+req.params.id);
+    if (order.status === 'complete') {
+      throw new ApiError('Products cannot be added to a completed order');
+    }
+
     for (const product of req.body.products) {
       await orderStore.addProduct(+req.params.id, product.product_id, product.quantity);
     }
-
-    const order: Order = await orderStore.getOrder(+req.params.id);
     const response: OrderDTO = {
       user_id: order.user_id,
       order_id: order.id!,
