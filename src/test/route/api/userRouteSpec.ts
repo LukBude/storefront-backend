@@ -19,8 +19,8 @@ describe('Test user route', () => {
       username: 'homer.simpson@gmail.com',
       password: 'password'
     };
-    spyOn(userStore, 'authenticateUser').and.returnValue(admin);
-    spyOn(userStore, 'getRoles').and.returnValue(['USER', 'ADMIN']);
+    spyOn(userStore, 'authenticateUser').and.returnValue(Promise.resolve(admin));
+    spyOn(userStore, 'getRoles').and.returnValue(Promise.resolve(['USER', 'ADMIN']));
 
     const response = await request
       .post('/api/users/authenticate')
@@ -33,7 +33,7 @@ describe('Test user route', () => {
   });
 
   it('/api/users/index', async () => {
-    spyOn(userStore, 'getAllUsers').and.returnValue([admin]);
+    spyOn(userStore, 'getAllUsers').and.returnValue(Promise.resolve([admin]));
 
     const response = await request
       .get('/api/users/index')
@@ -44,13 +44,13 @@ describe('Test user route', () => {
 
 
   it('/api/users/:id/show', async () => {
-    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(admin);
+    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(Promise.resolve(admin));
 
     const response = await request
       .get(`/api/users/${admin.id}/show`)
       .set('authorization', `Bearer ${adminToken}`);
 
-    expect(getUserSpy).toHaveBeenCalledWith(admin.id);
+    expect(getUserSpy).toHaveBeenCalledWith(admin.id!);
     expect(response.body).toEqual(admin);
   });
 
@@ -68,8 +68,8 @@ describe('Test user route', () => {
       username: user.username,
       password: user.password
     };
-    const addUserSpy = spyOn(userStore, 'addUser').and.returnValue(user);
-    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue(['USER']);
+    const addUserSpy = spyOn(userStore, 'addUser').and.returnValue(Promise.resolve(user));
+    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue(Promise.resolve(['USER']));
 
     const response = await request
       .post('/api/users/create')
@@ -91,8 +91,8 @@ describe('Test user route', () => {
     const requestBody = {
       role: 'ADMIN'
     };
-    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(user);
-    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue([requestBody.role]);
+    const getUserSpy = spyOn(userStore, 'getUser').and.returnValue(Promise.resolve(user));
+    const addRolesSpy = spyOn(userStore, 'addRoles').and.returnValue(Promise.resolve([requestBody.role]));
 
     const response = await request
       .post(`/api/users/${user.id}/add-role`)
@@ -100,7 +100,7 @@ describe('Test user route', () => {
       .set('authorization', `Bearer ${adminToken}`);
 
     expect(response.status).toBe(HttpStatusCode.OK);
-    expect(getUserSpy).toHaveBeenCalledWith(user.id);
+    expect(getUserSpy).toHaveBeenCalledWith(user.id!);
     expect(addRolesSpy).toHaveBeenCalledWith(user, [requestBody.role]);
   });
 

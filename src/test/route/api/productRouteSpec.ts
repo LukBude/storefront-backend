@@ -17,8 +17,8 @@ describe('Test product route', () => {
       username: 'lisa.simpson@gmail.com',
       password: 'password'
     };
-    spyOn(userStore, 'authenticateUser').and.returnValue(admin);
-    spyOn(userStore, 'getRoles').and.returnValue(['USER', 'ADMIN']);
+    spyOn(userStore, 'authenticateUser').and.returnValue(Promise.resolve(admin));
+    spyOn(userStore, 'getRoles').and.returnValue(Promise.resolve(['USER', 'ADMIN']));
 
     const response = await request
       .post('/api/users/authenticate')
@@ -37,7 +37,7 @@ describe('Test product route', () => {
       price: 18.02,
       category: 'Economics'
     };
-    spyOn(productStore, 'getAllProducts').and.returnValue([product]);
+    spyOn(productStore, 'getAllProducts').and.returnValue(Promise.resolve([product]));
 
     const response = await request
       .get('/api/products/index');
@@ -52,12 +52,12 @@ describe('Test product route', () => {
       price: 9.37,
       category: 'Statistics'
     };
-    const getProductSpy = spyOn(productStore, 'getProduct').and.returnValue(product);
+    const getProductSpy = spyOn(productStore, 'getProduct').and.returnValue(Promise.resolve(product));
 
     const response = await request
       .get(`/api/products/${product.id}/show`);
 
-    expect(getProductSpy).toHaveBeenCalledWith(product.id);
+    expect(getProductSpy).toHaveBeenCalledWith(product.id!);
     expect(response.body).toEqual(product);
   });
 
@@ -73,7 +73,7 @@ describe('Test product route', () => {
       price: product.price,
       category: product.category
     };
-    const addProductSpy = spyOn(productStore, 'addProduct').and.returnValue(product);
+    const addProductSpy = spyOn(productStore, 'addProduct').and.returnValue(Promise.resolve(product));
 
     const response = await request
       .post('/api/products/create')

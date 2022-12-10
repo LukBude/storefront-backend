@@ -45,7 +45,7 @@ describe('Test dashboard route', () => {
   });
 
   it('/api/dashboard/products/popular', async () => {
-    const getMostPopularProductsSpy = spyOn(dashboardService, 'getMostPopularProducts').and.returnValue(popularProducts);
+    const getMostPopularProductsSpy = spyOn(dashboardService, 'getMostPopularProducts').and.returnValue(Promise.resolve(popularProducts));
 
     const response = await request
       .get('/api/dashboard/products/popular');
@@ -56,7 +56,7 @@ describe('Test dashboard route', () => {
 
   it('/api/dashboard/products?category={category}', async () => {
     const category = 'Fantasy';
-    const getProductsByCategorySpy = spyOn(dashboardService, 'getProductsByCategory').and.returnValue(productsByCategory);
+    const getProductsByCategorySpy = spyOn(dashboardService, 'getProductsByCategory').and.returnValue(Promise.resolve(productsByCategory));
 
     const response = await request
       .get('/api/dashboard/products?category=' + category);

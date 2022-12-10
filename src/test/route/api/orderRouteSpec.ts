@@ -21,8 +21,8 @@ describe('Test order route', () => {
       username: 'marge.simpson@gmail.com',
       password: 'password'
     };
-    spyOn(userStore, 'authenticateUser').and.returnValue(user);
-    spyOn(userStore, 'getRoles').and.returnValue(['USER']);
+    spyOn(userStore, 'authenticateUser').and.returnValue(Promise.resolve(user));
+    spyOn(userStore, 'getRoles').and.returnValue(Promise.resolve(['USER']));
 
     const response = await request
       .post('/api/users/authenticate')
@@ -46,15 +46,15 @@ describe('Test order route', () => {
       status: 'active',
       products: []
     };
-    const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(activeOrder);
-    const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue([]);
+    const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(Promise.resolve(activeOrder));
+    const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue(Promise.resolve([]));
 
     const response = await request
       .get('/api/orders/active')
       .set('authorization', `Bearer ${userToken}`);
 
-    expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id);
-    expect(getProductsOfOrderSpy).toHaveBeenCalledWith(activeOrder.id);
+    expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id!);
+    expect(getProductsOfOrderSpy).toHaveBeenCalledWith(activeOrder.id!);
     expect(response.body).toEqual(expectedOrderDTO);
   });
 
@@ -70,15 +70,15 @@ describe('Test order route', () => {
       status: 'complete',
       products: []
     }];
-    const getCompletedOrderSpy = spyOn(orderStore, 'getCompletedOrders').and.returnValue([completedOrder]);
-    const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue([]);
+    const getCompletedOrderSpy = spyOn(orderStore, 'getCompletedOrders').and.returnValue(Promise.resolve([completedOrder]));
+    const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue(Promise.resolve([]));
 
     const response = await request
       .get('/api/orders/complete')
       .set('authorization', `Bearer ${userToken}`);
 
-    expect(getCompletedOrderSpy).toHaveBeenCalledWith(user.id);
-    expect(getProductsOfOrderSpy).toHaveBeenCalledWith(completedOrder.id);
+    expect(getCompletedOrderSpy).toHaveBeenCalledWith(user.id!);
+    expect(getProductsOfOrderSpy).toHaveBeenCalledWith(completedOrder.id!);
     expect(response.body).toEqual(expectedOrderDTOs);
   });
 
@@ -89,15 +89,15 @@ describe('Test order route', () => {
         user_id: user.id!,
         status: 'active'
       };
-      const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(undefined);
-      const addOrderSpy = spyOn(orderStore, 'addOrder').and.returnValue(order);
+      const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(Promise.resolve(undefined as unknown as Order));
+      const addOrderSpy = spyOn(orderStore, 'addOrder').and.returnValue(Promise.resolve(order));
 
       const response = await request
         .post('/api/orders/create')
         .set('authorization', `Bearer ${userToken}`);
 
-      expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id);
-      expect(addOrderSpy).toHaveBeenCalledWith({ user_id: user.id, status: 'active' });
+      expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id!);
+      expect(addOrderSpy).toHaveBeenCalledWith({ user_id: user.id!, status: 'active' });
       expect(response.body).toEqual(order);
     });
 
@@ -107,13 +107,13 @@ describe('Test order route', () => {
         user_id: user.id!,
         status: 'active'
       };
-      const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(order);
+      const getActiveOrderSpy = spyOn(orderStore, 'getActiveOrder').and.returnValue(Promise.resolve(order));
 
       const response = await request
         .post('/api/orders/create')
         .set('authorization', `Bearer ${userToken}`);
 
-      expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id);
+      expect(getActiveOrderSpy).toHaveBeenCalledWith(user.id!);
       expect(response.status).toEqual(HttpStatusCode.INTERNAL_SERVER);
     });
   });
@@ -129,7 +129,7 @@ describe('Test order route', () => {
       user_id: user.id!,
       status: 'complete'
     };
-    const closeOrderSpy = spyOn(orderStore, 'closeOrder').and.returnValue(completedOrder);
+    const closeOrderSpy = spyOn(orderStore, 'closeOrder').and.returnValue(Promise.resolve(completedOrder));
 
     const response = await request
       .post(`/api/orders/${activeOrder.id}/close`)
@@ -166,9 +166,9 @@ describe('Test order route', () => {
         status: 'active',
         products: productsOfOrder
       };
-      const getOrderSpy = spyOn(orderStore, 'getOrder').and.returnValue(activeOrder);
+      const getOrderSpy = spyOn(orderStore, 'getOrder').and.returnValue(Promise.resolve(activeOrder));
       const addProductSpy = spyOn(orderStore, 'addProduct');
-      const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue(productsOfOrder);
+      const getProductsOfOrderSpy = spyOn(orderStore, 'getProductsOfOrder').and.returnValue(Promise.resolve(productsOfOrder));
 
       const response = await request
         .post(`/api/orders/${activeOrder.id}/products`)
@@ -187,14 +187,14 @@ describe('Test order route', () => {
         user_id: user.id!,
         status: 'complete'
       };
-      const getOrderSpy = spyOn(orderStore, 'getOrder').and.returnValue(completeOrder);
+      const getOrderSpy = spyOn(orderStore, 'getOrder').and.returnValue(Promise.resolve(completeOrder));
 
       const response = await request
         .post(`/api/orders/${completeOrder.id}/products`)
         .send(requestBody)
         .set('authorization', `Bearer ${userToken}`);
 
-      expect(getOrderSpy).toHaveBeenCalledWith(user.id);
+      expect(getOrderSpy).toHaveBeenCalledWith(user.id!);
       expect(response.status).toEqual(HttpStatusCode.INTERNAL_SERVER);
     });
   });
