@@ -173,7 +173,7 @@ authorization: Bearer *Jane Smith's token*
       "quantity": "10"
     },
     {
-      "product_id": "3",
+      "product_id": "4",
       "quantity": "3"
     }
   ]
