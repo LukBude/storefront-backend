@@ -202,3 +202,12 @@ GET http://localhost:3000/api/dashboard/products/popular
 ### --> expect products 4 and 5
 GET http://localhost:3000/api/dashboard/products?category=Science Fiction
 
+### ADD role to user Jane Smith
+### --> this action requires an authorization-Header containing the Bearer-token of an ADMIN account
+POST http://localhost:3000/api/users/2/add-role
+Content-Type: application/json
+authorization: Bearer *John Smith's token*
+
+{
+  "role": "ADMIN"
+}
