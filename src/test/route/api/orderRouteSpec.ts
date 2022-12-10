@@ -22,7 +22,7 @@ describe('Test order route', () => {
       password: 'password'
     };
     spyOn(userStore, 'authenticateUser').and.returnValue(user);
-    spyOn(userStore, 'getRoles').and.returnValue(['USER', 'ADMIN']);
+    spyOn(userStore, 'getRoles').and.returnValue(['USER']);
 
     const response = await request
       .post('/api/users/authenticate')
