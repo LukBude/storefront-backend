@@ -60,8 +60,7 @@ Once the database is up and running, you can go ahead and test the REST API.
 
 ## Run Jasmine Tests
 
-The different store models as well as the dashboard service have been tested via unit tests by making use of jasmine. The
-endpoints have been tested
-by making use of jasmine in combination with the node module supertest. In order to execute these tests, open a console inside the
-root folder of the
-storefront-backend repository and execute the command "npm run test". 
+The different store models as well as the dashboard service have been tested via unit tests by making use of jasmine. Since the
+methods being tested are interacting with a database, the tests are configured to work with a test-database.
+The endpoints have been tested by making use of jasmine in combination with the node module supertest. In order to execute these
+tests, open a console inside the root folder of the storefront-backend repository and execute the command "npm run test". 
